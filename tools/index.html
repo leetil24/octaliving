@@ -272,9 +272,11 @@
   <div class="card">
     <p class="card-label">Step 4 — Affiliate ID & tracking</p>
     <div style="margin-bottom:8px;">
-      <label class="field-label">Your affiliate ID *</label>
-      <input type="text" id="affiliateId" placeholder="e.g. 14354840000" />
-      <p class="hint">Shopee Affiliate dashboard → Account Settings → Account Information</p>
+      <label class="field-label">Affiliate account</label>
+      <select id="affiliateId">
+        <option value="13399250022">Octa Living — 13399250022</option>
+      </select>
+      <p class="hint">Add more accounts to this list as needed.</p>
     </div>
     <div class="grid-2" style="margin-bottom:8px; margin-top:10px;">
       <div>
@@ -974,7 +976,6 @@ window.generate = async function() {
 
   if (!url)   { showAlert('error','Please paste a Shopee product URL.'); return; }
   if (!url.includes('shopee.ph')) { showAlert('error','URL must be a Shopee PH link (shopee.ph/…)'); return; }
-  if (!affId) { showAlert('error','Please enter your affiliate ID.'); return; }
   if (!name)  { showAlert('error','Please enter a product name.'); return; }
   if (!slug)  { showAlert('error','Please enter a short link slug.'); return; }
 
