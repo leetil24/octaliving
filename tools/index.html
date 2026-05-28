@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Octa Living — Link Generator v4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f9f9f7; --surface: #ffffff; --surface2: #f4f4f1;
+    --border: rgba(0,0,0,0.1); --border-strong: rgba(0,0,0,0.22);
+    --text: #1a1a18; --text-2: #5a5a55; --text-3: #9a9a93;
+    --gold: #c9a96e; --radius: 10px; --radius-sm: 6px;
+    --success-bg: #ebfbee; --success-border: #b2f2bb; --success-text: #2f9e44;
+    --error-bg: #fff5f5; --error-border: #ffc9c9; --error-text: #c92a2a;
+    --info-bg: #eef2ff; --info-border: #bac8ff; --info-text: #3b5bdb;
+    --warn-bg: #fff9db; --warn-border: #ffe066; --warn-text: #e67700;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; justify-content: center; padding: 2rem 1rem 4rem; }
+  .container { width: 100%; max-width: 600px; }
+
+  /* Header */
+  .header { display: flex; align-items: center; gap: 12px; margin-bottom: 2rem; }
+  .logo-mark { width: 38px; height: 38px; border-radius: 50%; background: var(--text); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .header-text p:first-child { font-size: 15px; font-weight: 600; }
+  .header-text p:last-child { font-size: 12px; color: var(--text-3); margin-top: 1px; }
+  .db-pill { margin-left: auto; display: flex; align-items: center; gap: 6px; background: var(--surface); border: 0.5px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--text-3); flex-shrink: 0; }
+  .db-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); transition: background .3s; }
+  .db-dot.connected { background: #40c057; }
+  .db-dot.error { background: #fa5252; }
+
+  /* Cards */
+  .card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.1rem 1.25rem; margin-bottom: 10px; }
+  .card-label { font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+
+  /* Inputs */
+  input[type="text"], input[type="url"], select {
+    width: 100%; padding: 9px 12px; font-family: 'DM Sans', sans-serif; font-size: 13px;
+    color: var(--text); background: var(--surface2); border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm); outline: none; transition: border-color .15s;
+    appearance: none; -webkit-appearance: none;
+  }
+  input:focus, select:focus { border-color: var(--border-strong); background: #fff; }
+  input::placeholder { color: var(--text-3); }
+  input.err { border-color: var(--error-text); }
+  .input-row { position: relative; }
+  .input-row input { padding-right: 36px; }
+  .input-clear { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-3); font-size: 16px; padding: 2px; display: none; }
+  .input-clear.show { display: block; }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239a9a93' stroke-width='2' stroke-linecap='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px;
+  }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .field-label { font-size: 11px; color: var(--text-3); margin-bottom: 4px; display: block; }
+  .slug-wrap { display: flex; align-items: stretch; }
+  .slug-prefix { font-size: 12px; color: var(--text-3); background: var(--surface2); border: 0.5px solid var(--border); border-right: none; border-radius: var(--radius-sm) 0 0 var(--radius-sm); padding: 0 10px; display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
+  .slug-wrap input { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; flex: 1; }
+  .hint { font-size: 11px; color: var(--text-3); margin-top: 6px; line-height: 1.5; }
+
+  /* Auto-suggest banner */
+  .suggest-banner { display: none; align-items: flex-start; gap: 10px; background: var(--info-bg); border: 0.5px solid var(--info-border); border-radius: var(--radius-sm); padding: 10px 12px; margin-top: 10px; font-size: 12px; color: var(--info-text); line-height: 1.5; }
+  .suggest-banner.show { display: flex; }
+  .suggest-banner-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  /* Commission badge inside card */
+  .comm-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; margin-top: 6px; }
+  .comm-high { background: #e8f5e9; color: #1b5e20; }
+  .comm-mid  { background: #fff8e1; color: #e65100; }
+  .comm-base { background: #f1f3f5; color: #495057; }
+
+  /* SubID preview */
+  .subid-label { font-size: 10px; color: var(--text-3); margin-bottom: 3px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .subid-preview { font-family: monospace; font-size: 11px; background: var(--surface2); border: 0.5px dashed var(--border-strong); border-radius: var(--radius-sm); padding: 8px 10px; color: var(--text-2); margin-top: 8px; word-break: break-all; line-height: 1.6; }
+
+  /* Buttons */
+  .btn-primary { width: 100%; padding: 12px; background: var(--text); color: #fff; border: none; border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; margin: 12px 0; transition: opacity .15s; }
+  .btn-primary:hover { opacity: .85; }
+  .btn-primary:disabled { opacity: .45; cursor: not-allowed; }
+
+  /* Alerts */
+  .alert { display: none; border-radius: var(--radius-sm); padding: .75rem 1rem; font-size: 13px; margin-bottom: 10px; }
+  .alert.error { display: block; background: var(--error-bg); border: 0.5px solid var(--error-border); color: var(--error-text); }
+  .alert.saving { display: flex; align-items: center; gap: 8px; background: var(--warn-bg); border: 0.5px solid var(--warn-border); color: var(--warn-text); }
+
+  /* Output */
+  .output { display: none; }
+  .result-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 10px; }
+  .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .result-label { font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .06em; }
+  .btn-copy { display: flex; align-items: center; gap: 5px; font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--text-2); background: var(--surface2); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 4px 10px; cursor: pointer; transition: background .12s; }
+  .btn-copy:hover { background: #ebebeb; }
+  .btn-copy.copied { color: var(--success-text); background: var(--success-bg); border-color: transparent; }
+  .link-mono { font-family: monospace; font-size: 11px; word-break: break-all; line-height: 1.7; }
+  .link-big { font-size: 15px; font-weight: 600; word-break: break-all; }
+  .tracking-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .tracking-item { background: var(--surface2); border-radius: var(--radius-sm); padding: 8px 10px; }
+  .tracking-item p:first-child { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 2px; }
+  .tracking-item p:last-child { font-size: 12px; font-weight: 500; word-break: break-all; }
+  .saved-badge { display: flex; align-items: center; gap: 10px; background: var(--success-bg); border: 0.5px solid var(--success-border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 10px; }
+  .saved-badge p:first-child { font-size: 13px; font-weight: 600; color: var(--success-text); }
+  .saved-badge p:last-child { font-size: 12px; color: var(--success-text); opacity: .8; margin-top: 2px; }
+  .steps-card { background: var(--surface2); border-radius: var(--radius); padding: 1rem 1.25rem; }
+  .steps-card ol { padding-left: 1.1rem; font-size: 13px; color: var(--text-2); line-height: 1.9; }
+  .steps-card strong { color: var(--text); font-weight: 600; }
+  .btn-reset { width: 100%; padding: 10px; background: none; color: var(--text-2); border: 0.5px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; margin-top: 8px; transition: all .15s; }
+  .btn-reset:hover { background: var(--surface); color: var(--text); }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  /* Toggle switch */
+  .toggle-wrap { display: inline-flex; align-items: center; cursor: pointer; }
+  .toggle-wrap input { display: none; }
+  .toggle-track { width: 44px; height: 24px; background: var(--border-strong); border-radius: 12px; position: relative; transition: background .2s; flex-shrink: 0; }
+  .toggle-wrap input:checked + .toggle-track { background: var(--text); }
+  .toggle-thumb { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; background: #fff; border-radius: 50%; transition: left .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+  .toggle-wrap input:checked + .toggle-track .toggle-thumb { left: 23px; }
+  .hero-on { background: #fff9db !important; border-color: #ffe066 !important; }
+  .hero-on .card-label { color: #e67700 !important; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="logo-mark">
+      <svg viewBox="0 0 30 30" fill="none" width="22" height="22">
+        <path d="M15 2 C9 2 4.5 6 3.5 11.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M3.5 11.5 C2.5 14 2.5 16 3.5 18.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M3.5 18.5 C4.5 24 9 28 15 28" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M15 28 C21 28 25.5 24 26.5 18.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M26.5 18.5 C27.5 16 27.5 14 26.5 11.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M26.5 11.5 C25.5 6 21 2 15 2" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="header-text">
+      <p>Shopee link generator</p>
+      <p>Octa Living · v4 — hero flag + auto-fill</p>
+    </div>
+    <div class="db-pill">
+      <div class="db-dot" id="db-dot"></div>
+      <span id="db-label">Connecting…</span>
+    </div>
+  </div>
+
+  <!-- Step 1: URL -->
+  <div class="card">
+    <p class="card-label">Step 1 — Paste Shopee product URL</p>
+    <div class="input-row">
+      <input type="url" id="productUrl" placeholder="https://shopee.ph/Product-Name-i.123.456" />
+      <button class="input-clear" id="url-clear" onclick="clearUrl()">✕</button>
+    </div>
+    <p class="hint">Paste the full Shopee PH product URL. Name and category will be auto-detected.</p>
+  </div>
+
+  <!-- Step 2: Product details — auto-filled -->
+  <div class="card">
+    <p class="card-label">Step 2 — Product details</p>
+    <div class="suggest-banner" id="suggest-banner">
+      <span class="suggest-banner-icon">✦</span>
+      <span id="suggest-text"></span>
+    </div>
+    <div style="margin-bottom:8px; margin-top:10px;">
+      <label class="field-label">Product name *</label>
+      <input type="text" id="productName" placeholder="Auto-filled from URL or type here" />
+    </div>
+    <div class="grid-2">
+      <div>
+        <label class="field-label">Price (₱)</label>
+        <input type="text" id="productPrice" placeholder="e.g. 599" />
+      </div>
+      <div>
+        <label class="field-label">Source platform</label>
+        <select id="source">
+          <option value="Shopee">Shopee</option>
+          <option value="Lazada">Lazada</option>
+          <option value="TikTok Shop">TikTok Shop</option>
+          <option value="Zalora">Zalora</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:8px;">
+      <label class="field-label">Image URL (optional)</label>
+      <input type="url" id="productImage" placeholder="https://..." />
+    </div>
+    <div id="comm-display" style="display:none; margin-top:2px;"></div>
+  </div>
+
+  <!-- Hero flag -->
+  <div class="card" id="hero-card">
+    <p class="card-label">Homepage hero</p>
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+      <div>
+        <p style="font-size:13px; font-weight:500; color:var(--text); margin-bottom:3px;">Feature on homepage hero</p>
+        <p style="font-size:11px; color:var(--text-3); line-height:1.5;">The 2 most recent hero-flagged products appear in the large side cards on <strong style="color:var(--text);">octaliving.com</strong>. Only flag products you want prominently showcased.</p>
+      </div>
+      <label class="toggle-wrap" style="flex-shrink:0;">
+        <input type="checkbox" id="heroFlag" />
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+      </label>
+    </div>
+    <div id="hero-extra" style="display:none; margin-top:12px; padding-top:12px; border-top:0.5px solid var(--border);">
+      <div class="grid-2">
+        <div>
+          <label class="field-label">Hero badge label</label>
+          <input type="text" id="heroBadge" placeholder="e.g. New pick, Great deal, Popular" />
+        </div>
+        <div>
+          <label class="field-label">Original price (₱) — for discount</label>
+          <input type="text" id="heroOrigPrice" placeholder="e.g. 2450 (optional)" />
+        </div>
+      </div>
+      <p class="hint" style="margin-top:6px;">The hero badge and original price show on the homepage card. Leave original price empty if no discount.</p>
+    </div>
+  </div>
+
+  <!-- Step 3: Catalog placement — auto-filled -->
+  <div class="card">
+    <p class="card-label">Step 3 — Catalog placement</p>
+    <div style="display:grid; gap:8px;">
+      <div>
+        <label class="field-label">Department</label>
+        <select id="dept" onchange="onDeptChange()"></select>
+      </div>
+      <div>
+        <label class="field-label">Subcategory</label>
+        <select id="subcat" onchange="onSubcatChange()"></select>
+      </div>
+      <div>
+        <label class="field-label">Product type</label>
+        <select id="itemtype" onchange="updateSubIdPreview()"></select>
+      </div>
+    </div>
+    <p class="hint">Auto-matched from your product list. Edit if needed before saving.</p>
+  </div>
+
+  <!-- Step 4: Tracking -->
+  <div class="card">
+    <p class="card-label">Step 4 — Affiliate ID & tracking</p>
+    <div style="margin-bottom:8px;">
+      <label class="field-label">Your affiliate ID *</label>
+      <input type="text" id="affiliateId" placeholder="e.g. 14354840000" />
+      <p class="hint">Shopee Affiliate dashboard → Account Settings → Account Information</p>
+    </div>
+    <div class="grid-2" style="margin-bottom:8px; margin-top:10px;">
+      <div>
+        <label class="field-label">Traffic source</label>
+        <select id="trafficSource" onchange="updateSubIdPreview()">
+          <option value="website">Website</option>
+          <option value="facebook">Facebook</option>
+          <option value="instagram">Instagram</option>
+          <option value="tiktok">TikTok</option>
+          <option value="email">Email</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div>
+        <label class="field-label">Custom tag (optional)</label>
+        <input type="text" id="customTag" placeholder="e.g. deal, featured" oninput="updateSubIdPreview()" />
+      </div>
+    </div>
+    <div>
+      <label class="field-label">Short link slug</label>
+      <div class="slug-wrap">
+        <span class="slug-prefix">ph.octaliving.com/</span>
+        <input type="text" id="slug" placeholder="e.g. jisulife-fan" />
+      </div>
+    </div>
+    <div style="margin-top:10px;">
+      <div class="subid-label">Sub_id preview</div>
+      <div class="subid-preview" id="subid-preview">octaliving-spaces-website-octa-living</div>
+    </div>
+  </div>
+
+  <div class="alert" id="alert"></div>
+  <button class="btn-primary" id="btn-generate" onclick="generate()">Generate & save to explorer</button>
+
+  <!-- Output -->
+  <div class="output" id="output">
+    <div class="saved-badge">
+      <div style="font-size:22px;">✓</div>
+      <div>
+        <p>Saved to department explorer</p>
+        <p id="saved-location"></p>
+      </div>
+    </div>
+    <div class="result-card">
+      <div class="result-header">
+        <span class="result-label">Full tracked link — paste into Short.io</span>
+        <button class="btn-copy" onclick="copyText('fullLink', this)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy
+        </button>
+      </div>
+      <p id="fullLink" class="link-mono"></p>
+    </div>
+    <div class="result-card">
+      <div class="result-header">
+        <span class="result-label">Your branded short link</span>
+        <button class="btn-copy" onclick="copyText('shortLink', this)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy
+        </button>
+      </div>
+      <p id="shortLink" class="link-big"></p>
+    </div>
+    <div class="result-card">
+      <p class="card-label" style="margin-bottom:10px;">Tracking breakdown</p>
+      <div class="tracking-grid" id="trackingBreakdown"></div>
+    </div>
+    <div class="steps-card">
+      <p class="card-label" style="margin-bottom:8px;">Finish in Short.io</p>
+      <ol>
+        <li>Go to <strong>Short.io</strong> → New link</li>
+        <li>Paste the full tracked link as the destination URL</li>
+        <li>Set the slug to <strong id="slugReminder"></strong></li>
+        <li>Set domain to <strong>ph.octaliving.com</strong></li>
+        <li>Save — your branded link is live!</li>
+      </ol>
+    </div>
+    <button class="btn-reset" onclick="reset()">Generate another link</button>
+  </div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBCshoaZtrhuG1GNmD1MoArfW7wPvTIEto",
+  authDomain: "octa-living.firebaseapp.com",
+  projectId: "octa-living",
+  storageBucket: "octa-living.firebasestorage.app",
+  messagingSenderId: "728259117086",
+  appId: "1:728259117086:web:a0b48da63aa04c41a5ae0f"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+window._db = db;
+document.getElementById('db-dot').className = 'db-dot connected';
+document.getElementById('db-label').textContent = 'Firebase ready';
+
+// ── 154-product reference list ─────────────────────────────────────────
+const productRef = [
+  {name:'3D Foam Brick Wallpaper',dept:'spaces',sub:'Decor & accents',type:'Wall art & frames',comm:'5–7%',commType:'high',xtra:true},
+  {name:'LED Fairy String Lights',dept:'spaces',sub:'Lighting',type:'LED strips & ambient',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Throw Pillow with Insert',dept:'spaces',sub:'Living room',type:'Cushions & throws',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Bedside Table / Nightstand',dept:'spaces',sub:'Bedroom',type:'Bedside tables',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Aesthetic Wall Clock',dept:'spaces',sub:'Decor & accents',type:'Wall clocks',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Scented Soy Candle',dept:'spaces',sub:'Decor & accents',type:'Scented candles',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Macramé Wall Hanging',dept:'spaces',sub:'Decor & accents',type:'Wall art & frames',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Storage Ottoman / Pouf',dept:'spaces',sub:'Living room',type:'Sofas & couches',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Artificial Indoor Plant',dept:'spaces',sub:'Plants & outdoors',type:'Artificial plants',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Ceramic Plant Pot',dept:'spaces',sub:'Plants & outdoors',type:'Plant pots & planters',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Linen Bed Sheet Set',dept:'spaces',sub:'Bedroom',type:'Bed sheets & duvet covers',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Blackout Curtains',dept:'spaces',sub:'Bedroom',type:'Blackout curtains',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Arc Floor Lamp',dept:'spaces',sub:'Lighting',type:'Floor lamps',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Floating Wall Shelves',dept:'spaces',sub:'Living room',type:'Shelves & storage',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Bamboo Ladder Shelf',dept:'spaces',sub:'Living room',type:'Shelves & storage',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Photo Frame Set',dept:'spaces',sub:'Decor & accents',type:'Picture frames',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Bathroom Organizer Set',dept:'spaces',sub:'Bathroom',type:'Bathroom organizers',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Aesthetic Doormat',dept:'spaces',sub:'Decor & accents',type:'Decorative trays',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Rattan Storage Basket',dept:'spaces',sub:'Living room',type:'Shelves & storage',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Aroma Diffuser',dept:'spaces',sub:'Decor & accents',type:'Scented candles',comm:'7–10%',commType:'high',xtra:true},
+  {name:'LED Mushroom Night Light',dept:'spaces',sub:'Lighting',type:'LED strips & ambient',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Bedside Lamp',dept:'spaces',sub:'Lighting',type:'Table lamps',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Pour-Over Coffee Set',dept:'eats',sub:'Coffee & tea',type:'Pour-over sets',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Gooseneck Electric Kettle',dept:'eats',sub:'Small appliances',type:'Electric kettles',comm:'3–5%',commType:'mid',xtra:true},
+  {name:'Insulated Tumbler / Thermos',dept:'eats',sub:'Drinkware',type:'Tumblers & bottles',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Ceramic Mug Set',dept:'eats',sub:'Drinkware',type:'Mugs & cups',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Air Fryer',dept:'eats',sub:'Small appliances',type:'Air fryers',comm:'3–5%',commType:'mid',xtra:false},
+  {name:'Rice Cooker',dept:'eats',sub:'Small appliances',type:'Rice cookers',comm:'3–5%',commType:'mid',xtra:false},
+  {name:'Wooden Cutting Board',dept:'eats',sub:'Kitchen tools',type:'Cutting boards',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Chef Knife Set',dept:'eats',sub:'Kitchen tools',type:'Chef knives & sets',comm:'5–7%',commType:'high',xtra:true},
+  {name:'French Press Coffee Maker',dept:'eats',sub:'Coffee & tea',type:'French press & Moka pots',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Milk Frother',dept:'eats',sub:'Coffee & tea',type:'Milk frothers',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Glass Water Carafe',dept:'eats',sub:'Drinkware',type:'Water carafes',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Portable Blender / Juicer',dept:'eats',sub:'Small appliances',type:'Mini blenders',comm:'3–5%',commType:'mid',xtra:true},
+  {name:'Non-stick Fry Pan',dept:'eats',sub:'Cookware',type:'Pots & pans',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Bento Lunch Box',dept:'eats',sub:'Drinkware',type:'Tumblers & bottles',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Kitchen Canister / Storage Set',dept:'eats',sub:'Kitchen tools',type:'Kitchen scales',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Silicone Kitchen Utensil Set',dept:'eats',sub:'Kitchen tools',type:'Spatulas & utensils',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Digital Kitchen Scale',dept:'eats',sub:'Kitchen tools',type:'Kitchen scales',comm:'3–5%',commType:'mid',xtra:false},
+  {name:'Cold Brew Coffee Bottle',dept:'eats',sub:'Coffee & tea',type:'Specialty drinkware',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Drip Coffee Bag (sachets)',dept:'eats',sub:'Pantry & snacks',type:'Artisan coffee & tea',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Matcha Whisk Set',dept:'eats',sub:'Coffee & tea',type:'Tea leaves & sets',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Airfryer Accessories Set',dept:'eats',sub:'Small appliances',type:'Air fryers',comm:'3–5%',commType:'mid',xtra:false},
+  {name:'Wooden Serving Board',dept:'eats',sub:'Kitchen tools',type:'Cutting boards',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Oversized T-Shirt',dept:'style',sub:"Men's",type:'Basic & graphic tees',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Linen Pants',dept:'style',sub:"Men's",type:'Linen & chino trousers',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Canvas Tote Bag',dept:'style',sub:'Accessories',type:'Bags & tote bags',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Mini Crossbody Bag',dept:'style',sub:'Accessories',type:'Bags & tote bags',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Canvas Slip-On Shoes',dept:'style',sub:'Footwear',type:'Slip-ons & mules',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Midi Dress',dept:'style',sub:"Women's",type:'Dresses & jumpsuits',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Jogger Pants',dept:'style',sub:'Teens',type:'Cargo pants & joggers',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Bucket Hat',dept:'style',sub:'Accessories',type:'Caps & hats',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Sling Bag',dept:'style',sub:'Accessories',type:'Backpacks & sling bags',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Sunglasses UV400',dept:'style',sub:'Accessories',type:'Sunglasses',comm:'7–10%',commType:'high',xtra:true},
+  {name:'High-Waist Leggings',dept:'style',sub:'Activewear',type:'Leggings & tights',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Sports Bra',dept:'style',sub:'Activewear',type:'Sports bras & crop tops',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Baby Romper / Onesie',dept:'style',sub:'Babies',type:'Onesies & bodysuits',comm:'7–10%',commType:'high',xtra:true},
+  {name:'School Uniform Set (Kids)',dept:'style',sub:'Children',type:'School uniforms',comm:'7–10%',commType:'high',xtra:false},
+  {name:'Maternity Dress',dept:'style',sub:'Maternity',type:'Maternity dresses',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Slim Fit Polo Shirt (Men)',dept:'style',sub:"Men's",type:'Polo & button-down shirts',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Minimalist Leather Watch',dept:'style',sub:'Accessories',type:'Watches',comm:'5–7%',commType:'mid',xtra:true},
+  {name:'Slim Card Holder / Wallet',dept:'style',sub:'Accessories',type:'Wallets & cardholders',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Denim Shorts',dept:'style',sub:"Women's",type:'Denim jeans',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Chunky Sneakers',dept:'style',sub:'Footwear',type:'Sneakers & rubber shoes',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Nursing Bra',dept:'style',sub:'Maternity',type:'Nursing bras & underwear',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Swaddle Blanket',dept:'style',sub:'Babies',type:'Swaddle blankets',comm:'7–10%',commType:'high',xtra:false},
+  {name:'Yoga Mat (Non-slip)',dept:'well',sub:'Fitness',type:'Yoga mats',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Resistance Band Set',dept:'well',sub:'Fitness',type:'Resistance bands',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Korean Skincare Set',dept:'well',sub:'Skincare',type:'Moisturizers & serums',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Sunscreen SPF 50',dept:'well',sub:'Skincare',type:'Sunscreen SPF',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Collagen Supplement',dept:'well',sub:'Supplements',type:'Collagen & protein',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Electric Facial Massager',dept:'well',sub:'Skincare',type:'Skincare tools',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Sleep Eye Mask',dept:'well',sub:'Sleep & recovery',type:'Sleep masks',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Foam Roller',dept:'well',sub:'Fitness',type:'Foam rollers',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Adjustable Dumbbell Set',dept:'well',sub:'Fitness',type:'Dumbbells & weights',comm:'3–5%',commType:'mid',xtra:false},
+  {name:'Vitamin C Serum',dept:'well',sub:'Skincare',type:'Moisturizers & serums',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Niacinamide Serum',dept:'well',sub:'Skincare',type:'Moisturizers & serums',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Facial Sheet Mask',dept:'well',sub:'Skincare',type:'Face masks & patches',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Electric Scalp Massager',dept:'well',sub:'Hair care',type:'Hair tools',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Gua Sha + Jade Roller Set',dept:'well',sub:'Skincare',type:'Skincare tools',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Multivitamins (Vit C + Zinc)',dept:'well',sub:'Supplements',type:'Vitamins & minerals',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Jump Rope / Speed Rope',dept:'well',sub:'Fitness',type:'Jump ropes',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Acne / Pimple Patch',dept:'well',sub:'Skincare',type:'Face masks & patches',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Bath & Body Scrub Set',dept:'well',sub:'Body care',type:'Shower gels & scrubs',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Hair Vitamin / Serum',dept:'well',sub:'Hair care',type:'Hair oils & serums',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Weighted Sleep Blanket',dept:'well',sub:'Sleep & recovery',type:'Weighted blankets',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Essential Oil Diffuser',dept:'well',sub:'Mental wellness',type:'Aromatherapy & diffusers',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Probiotics Supplement',dept:'well',sub:'Supplements',type:'Probiotics',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Hardshell Carry-On Luggage',dept:'move',sub:'Luggage',type:'Carry-on luggage',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Packing Cubes Set',dept:'move',sub:'Luggage',type:'Packing cubes',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Travel Neck Pillow',dept:'move',sub:'Travel accessories',type:'Travel pillows',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Passport Holder / Organizer',dept:'move',sub:'Travel accessories',type:'Passport holders',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Anti-Theft Backpack',dept:'move',sub:'Travel bags',type:'Backpacks',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Universal Travel Adapter',dept:'move',sub:'Travel accessories',type:'Power adapters',comm:'3–5%',commType:'mid',xtra:false},
+  {name:'Power Bank 20000mAh',dept:'move',sub:'Gadgets on the go',type:'Portable chargers',comm:'2.5–4%',commType:'base',xtra:false},
+  {name:'Luggage Tag',dept:'move',sub:'Luggage',type:'Luggage tags & covers',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Foldable Travel Duffel Bag',dept:'move',sub:'Travel bags',type:'Duffel bags',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Compression Travel Bags',dept:'move',sub:'Luggage',type:'Packing cubes',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Travel Toiletry Bag',dept:'move',sub:'Travel accessories',type:'Packing sets',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Noise-Cancelling Earbuds',dept:'move',sub:'Gadgets on the go',type:'Noise-cancelling headphones',comm:'2.5–4%',commType:'base',xtra:false},
+  {name:'Travel Size Skincare Set',dept:'move',sub:'Comfort & health',type:'Travel skincare sets',comm:'7–10%',commType:'high',xtra:true},
+  {name:'Lightweight Crossbody Travel Bag',dept:'move',sub:'Travel bags',type:'Crossbody bags',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Travel Cable Organizer',dept:'move',sub:'Travel accessories',type:'Packing sets',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Fanny Pack / Belt Bag',dept:'move',sub:'Travel bags',type:'Fanny packs',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Compression Socks',dept:'move',sub:'Comfort & health',type:'Compression socks',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Portable Luggage Scale',dept:'move',sub:'Travel accessories',type:'Packing sets',comm:'3–5%',commType:'mid',xtra:false},
+  {name:'Action Camera (GoPro type)',dept:'move',sub:'Gadgets on the go',type:'Action cameras',comm:'2.5–4%',commType:'base',xtra:false},
+  {name:'Reusable Collapsible Water Bottle',dept:'move',sub:'Comfort & health',type:'Reusable water bottles',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Eye Mask + Earplugs Travel Set',dept:'move',sub:'Travel accessories',type:'Eye masks & earplugs',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Portable Mini Fan',dept:'move',sub:'Comfort & health',type:'Portable humidifiers',comm:'3–5%',commType:'mid',xtra:false},
+  {name:'Leather Desk Mat',dept:'work',sub:'Desk setup',type:'Desk mats & pads',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Wireless Mechanical Keyboard',dept:'work',sub:'Input devices',type:'Mechanical keyboards',comm:'2.5–4%',commType:'base',xtra:true},
+  {name:'Wireless Mouse',dept:'work',sub:'Input devices',type:'Productivity mice',comm:'2.5–4%',commType:'base',xtra:true},
+  {name:'Laptop Stand',dept:'work',sub:'Desk setup',type:'Laptop stands',comm:'3–5%',commType:'mid',xtra:true},
+  {name:'Monitor Stand / Riser',dept:'work',sub:'Desk setup',type:'Monitor stands & risers',comm:'3–5%',commType:'mid',xtra:false},
+  {name:'USB-C Hub / Docking Station',dept:'work',sub:'Tech accessories',type:'USB hubs & docking stations',comm:'2.5–4%',commType:'base',xtra:false},
+  {name:'Noise-Cancelling Headphones',dept:'work',sub:'Audio',type:'Over-ear headphones',comm:'2.5–4%',commType:'base',xtra:true},
+  {name:'Wireless Earbuds (TWS)',dept:'work',sub:'Audio',type:'Wireless earbuds',comm:'2.5–4%',commType:'base',xtra:true},
+  {name:'Ring Light with Stand',dept:'work',sub:'Tech accessories',type:'Ring lights',comm:'3–5%',commType:'mid',xtra:true},
+  {name:'USB Microphone',dept:'work',sub:'Audio',type:'USB microphones',comm:'2.5–4%',commType:'base',xtra:false},
+  {name:'Webcam HD 1080p',dept:'work',sub:'Tech accessories',type:'Webcams',comm:'2.5–4%',commType:'base',xtra:false},
+  {name:'Desk Organizer Set',dept:'work',sub:'Desk setup',type:'Desk organizers',comm:'5–7%',commType:'high',xtra:true},
+  {name:'LED Desk Lamp with USB',dept:'work',sub:'Desk setup',type:'Desk lamps',comm:'3–5%',commType:'mid',xtra:true},
+  {name:'Hardcover Planner / Notebook',dept:'work',sub:'Stationery',type:'Notebooks & journals',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Cable Management Box',dept:'work',sub:'Tech accessories',type:'USB hubs & docking stations',comm:'3–5%',commType:'mid',xtra:false},
+  {name:'Ergonomic Chair',dept:'work',sub:'Ergonomics',type:'Ergonomic chairs',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Lumbar Support Pillow',dept:'work',sub:'Ergonomics',type:'Lumbar support pillows',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Portable SSD',dept:'work',sub:'Tech accessories',type:'Portable SSDs',comm:'2.5–4%',commType:'base',xtra:false},
+  {name:'Wrist Rest for Keyboard',dept:'work',sub:'Ergonomics',type:'Wrist rests',comm:'3–5%',commType:'mid',xtra:false},
+  {name:'Aesthetic Sticky Notes Set',dept:'work',sub:'Stationery',type:'Sticky notes',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Monitor Arm',dept:'work',sub:'Desk setup',type:'Monitor stands & risers',comm:'3–5%',commType:'mid',xtra:false},
+  {name:'Drawing Tablet',dept:'work',sub:'Input devices',type:'Drawing tablets',comm:'2.5–4%',commType:'base',xtra:false},
+  {name:'1000-Piece Jigsaw Puzzle',dept:'play',sub:'Puzzles & board games',type:'Jigsaw puzzles',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Ukulele (Beginner)',dept:'play',sub:'Music',type:'Ukuleles & guitars',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Watercolor Paint Set',dept:'play',sub:'Art & craft',type:'Watercolor sets',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Sketchbook / Art Pad',dept:'play',sub:'Art & craft',type:'Sketchbooks & art pads',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Portable Bluetooth Speaker',dept:'play',sub:'Music',type:'Portable speakers',comm:'2.5–4%',commType:'base',xtra:true},
+  {name:'Vinyl Record Player',dept:'play',sub:'Music',type:'Record players & vinyl',comm:'3–5%',commType:'mid',xtra:true},
+  {name:'Board Game (Uno, Jenga, etc.)',dept:'play',sub:'Puzzles & board games',type:'Card games',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Aesthetic Playing Cards',dept:'play',sub:'Puzzles & board games',type:'Card games',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Diamond Painting Kit',dept:'play',sub:'Art & craft',type:'Craft kits & DIY',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Acrylic Paint Set',dept:'play',sub:'Art & craft',type:'Canvas & paints',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Hammock (Indoor/Outdoor)',dept:'play',sub:'Outdoor & recreation',type:'Hammocks',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Camping Tent',dept:'play',sub:'Outdoor & recreation',type:'Camping gear',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Picnic Mat / Blanket',dept:'play',sub:'Outdoor & recreation',type:'Picnic sets',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Colored Pencil Set (72/120pcs)',dept:'play',sub:'Art & craft',type:'Colored pencils & markers',comm:'5–7%',commType:'high',xtra:false},
+  {name:'E-reader / Kindle Case',dept:'play',sub:'Books & reading',type:'E-readers & cases',comm:'3–5%',commType:'mid',xtra:false},
+  {name:'Mobile Gaming Controller',dept:'play',sub:'Gaming',type:'Controllers & accessories',comm:'2.5–4%',commType:'base',xtra:true},
+  {name:'DIY Candle Making Kit',dept:'play',sub:'Art & craft',type:'Craft kits & DIY',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Resin Art Kit',dept:'play',sub:'Art & craft',type:'Craft kits & DIY',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Badminton Racket Set',dept:'play',sub:'Outdoor & recreation',type:'Sports equipment',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Frisbee / Flying Disc',dept:'play',sub:'Outdoor & recreation',type:'Sports equipment',comm:'5–7%',commType:'high',xtra:false},
+  {name:'Crochet Starter Kit',dept:'play',sub:'Art & craft',type:'Craft kits & DIY',comm:'5–7%',commType:'high',xtra:true},
+  {name:'Bluetooth Karaoke Microphone',dept:'play',sub:'Music',type:'Instrument accessories',comm:'2.5–4%',commType:'base',xtra:true},
+];
+
+// ── Department structure ───────────────────────────────────────────────
+const depts = [
+  {id:'spaces',name:'Spaces',subs:[
+    {name:'Living room',items:['Sofas & couches','Coffee tables','TV stands','Rugs & carpets','Cushions & throws','Wall art & frames','Shelves & storage']},
+    {name:'Bedroom',items:['Bed frames','Pillows & pillowcases','Bed sheets & duvet covers','Bedside tables','Wardrobes & organizers','Mirrors','Blackout curtains']},
+    {name:'Kitchen & dining',items:['Dining tables & chairs','Placemats & table runners','Kitchen organizers','Serving trays','Countertop accessories','Cookware & bakeware']},
+    {name:'Bathroom',items:['Towels & bath sets','Bathroom organizers','Soap dispensers','Shower curtains','Bathroom mats','Toilet accessories']},
+    {name:'Lighting',items:['Floor lamps','Table lamps','Pendant lights','LED strips & ambient','Desk lamps','Candles & holders']},
+    {name:'Plants & outdoors',items:['Indoor plants','Plant pots & planters','Plant stands','Balcony furniture','Garden tools','Artificial plants']},
+    {name:'Decor & accents',items:['Vases & sculptures','Scented candles','Wall clocks','Picture frames','Decorative trays','Seasonal decor']},
+  ]},
+  {id:'eats',name:'Eats',subs:[
+    {name:'Coffee & tea',items:['Pour-over sets','French press & Moka pots','Coffee beans & ground','Tea leaves & sets','Milk frothers','Coffee grinders','Specialty drinkware']},
+    {name:'Drinkware',items:['Tumblers & bottles','Mugs & cups','Wine glasses','Water carafes','Thermos flasks','Cocktail glassware']},
+    {name:'Kitchen tools',items:['Chef knives & sets','Cutting boards','Mixing bowls','Measuring tools','Peelers & graters','Spatulas & utensils','Kitchen scales']},
+    {name:'Cookware',items:['Pots & pans','Cast iron','Non-stick cookware','Woks & steamers','Baking trays & molds','Dutch ovens']},
+    {name:'Pantry & snacks',items:['Artisan coffee & tea','Specialty snacks','Hot sauces & condiments','Healthy snack boxes','Gift food sets','Cooking oils & vinegars']},
+    {name:'Small appliances',items:['Electric kettles','Mini blenders','Toaster ovens','Air fryers','Rice cookers','Coffee makers']},
+  ]},
+  {id:'style',name:'Style',subs:[
+    {name:"Men's",items:['Basic & graphic tees','Polo & button-down shirts','Linen & chino trousers','Denim jeans','Shorts','Blazers & sport coats','Hoodies & sweatshirts','Formal wear','Underwear & socks','Sleepwear & loungewear']},
+    {name:"Women's",items:['Tops & blouses','Dresses & jumpsuits','Skirts','Trousers & wide-leg pants','Jeans','Blazers & cardigans','Outerwear & coats','Underwear & intimates','Sleepwear & loungewear','Swimwear']},
+    {name:'Teens',items:['Streetwear & graphic tees','Oversized hoodies','Cargo pants & joggers','Denim & shorts','School & smart casual','Trendy outerwear','Caps & accessories','School bags & backpacks']},
+    {name:'Children',items:['Everyday tops & t-shirts','School uniforms','Shorts & pants','Dresses & skirts','Outerwear & raincoats','Play & sport sets','Pajamas & sleepwear','Kids shoes']},
+    {name:'Babies',items:['Onesies & bodysuits','Rompers & playsuits','Baby sleepwear','Soft-sole shoes & booties','Bibs & feeding sets','Baby hats & mittens','Swaddle blankets','Newborn gift sets']},
+    {name:'Maternity',items:['Maternity tops & blouses','Maternity dresses','Maternity jeans & leggings','Nursing bras & underwear','Postpartum recovery wear','Belly support bands','Maternity swimwear','Gift sets for new moms']},
+    {name:'Plus size',items:['Plus size tops','Plus size dresses','Plus size trousers & jeans','Plus size activewear','Plus size swimwear','Plus size lingerie','Plus size outerwear','Extended sizing basics']},
+    {name:'Activewear',items:['Sports bras & crop tops','Leggings & tights','Running shorts & shirts','Compression gear','Gym sets','Yoga wear','Swim & water sports','Sports socks & underlayers']},
+    {name:'Accessories',items:['Bags & tote bags','Backpacks & sling bags','Wallets & cardholders','Sunglasses','Caps & hats','Belts','Watches','Jewelry & rings','Scarves & wraps']},
+    {name:'Footwear',items:['Sneakers & rubber shoes','Loafers & flats','Sandals & slippers','Boots & ankle boots','Formal shoes','Sports & running shoes','Slip-ons & mules','Kids footwear']},
+  ]},
+  {id:'well',name:'Well',subs:[
+    {name:'Fitness',items:['Yoga mats','Resistance bands','Dumbbells & weights','Jump ropes','Foam rollers','Gym bags','Workout accessories']},
+    {name:'Skincare',items:['Cleansers & toners','Moisturizers & serums','Sunscreen SPF','Face masks & patches','Eye creams','Lip care','Skincare tools']},
+    {name:'Body care',items:['Body lotions & oils','Shower gels & scrubs','Deodorants','Hand creams','Foot care','Bath salts & bombs']},
+    {name:'Hair care',items:['Shampoo & conditioner','Hair oils & serums','Scalp treatments','Hair tools','Hair accessories']},
+    {name:'Sleep & recovery',items:['Weighted blankets','Sleep masks','Pillow mists','White noise devices','Massage tools','Heating pads']},
+    {name:'Supplements',items:['Vitamins & minerals','Collagen & protein','Probiotics','Herbal supplements','Immunity boosters','Sports nutrition']},
+    {name:'Mental wellness',items:['Aromatherapy & diffusers','Meditation cushions','Wellness planners','Stress relief tools','Sound therapy']},
+  ]},
+  {id:'move',name:'Move',subs:[
+    {name:'Luggage',items:['Carry-on luggage','Check-in luggage','Soft-shell bags','Hard-shell suitcases','Luggage tags & covers','Packing cubes']},
+    {name:'Travel bags',items:['Backpacks','Duffel bags','Crossbody bags','Fanny packs','Laptop-friendly carry-ons','Tote bags']},
+    {name:'Travel accessories',items:['Travel pillows','Eye masks & earplugs','Passport holders','Travel wallets','Power adapters','Packing sets']},
+    {name:'Gadgets on the go',items:['Portable chargers','Travel routers','Noise-cancelling headphones','Compact cameras','Action cameras','Travel speakers']},
+    {name:'Comfort & health',items:['Compression socks','Travel sanitizers','Reusable water bottles','Portable humidifiers','Travel skincare sets']},
+  ]},
+  {id:'work',name:'Work',subs:[
+    {name:'Desk setup',items:['Desk mats & pads','Monitor stands & risers','Laptop stands','Desk organizers','Cable management','Ergonomic accessories']},
+    {name:'Input devices',items:['Mechanical keyboards','Wireless keyboards','Productivity mice','Trackpads','Drawing tablets','Number pads']},
+    {name:'Audio',items:['Over-ear headphones','In-ear monitors','Wireless earbuds','Desktop speakers','USB microphones','Podcast gear']},
+    {name:'Stationery',items:['Notebooks & journals','Pens & markers','Planners & organizers','Sticky notes','Desk clocks','File organizers']},
+    {name:'Tech accessories',items:['USB hubs & docking stations','Privacy filters','Webcams','Ring lights','HDMI cables & adapters','Portable SSDs']},
+    {name:'Ergonomics',items:['Ergonomic chairs','Standing desk mats','Wrist rests','Lumbar support pillows','Monitor arms','Footrests']},
+  ]},
+  {id:'play',name:'Play',subs:[
+    {name:'Gaming',items:['Controllers & accessories','Gaming headsets','Gaming chairs','Console accessories','PC peripherals','Gaming mousepads']},
+    {name:'Books & reading',items:['Bestseller fiction','Non-fiction & self-help','Art & design books','Cookbooks','E-readers & cases','Book lights & stands']},
+    {name:'Art & craft',items:['Sketchbooks & art pads','Colored pencils & markers','Watercolor sets','Brush sets','Canvas & paints','Craft kits & DIY']},
+    {name:'Music',items:['Ukuleles & guitars','Capos & tuners','Portable speakers','Record players & vinyl','Instrument accessories']},
+    {name:'Outdoor & recreation',items:['Hammocks','Camping gear','Picnic sets','Sports equipment','Cycling accessories','Beach & pool essentials']},
+    {name:'Puzzles & board games',items:['Jigsaw puzzles','Strategy board games','Card games','Party games','Mini travel games']},
+    {name:'Collectibles & gifts',items:['Gift sets & bundles','Lifestyle collectibles','Candles & diffusers','Desk toys','Seasonal gifts','Personalized items']},
+  ]},
+];
+
+window._depts = depts;
+window._productRef = productRef;
+
+// ── Populate dept dropdown ─────────────────────────────────────────────
+const deptSel = document.getElementById('dept');
+depts.forEach(d => {
+  const o = document.createElement('option');
+  o.value = d.id; o.textContent = d.name;
+  deptSel.appendChild(o);
+});
+
+window.onDeptChange = function(keepSub) {
+  const deptId = document.getElementById('dept').value;
+  const dept = depts.find(d => d.id === deptId);
+  const subSel = document.getElementById('subcat');
+  const current = subSel.value;
+  subSel.innerHTML = '';
+  dept.subs.forEach(s => {
+    const o = document.createElement('option');
+    o.value = s.name; o.textContent = s.name;
+    subSel.appendChild(o);
+  });
+  if (keepSub && dept.subs.find(s => s.name === current)) subSel.value = current;
+  window.onSubcatChange(keepSub);
+  updateSubIdPreview();
+};
+
+window.onSubcatChange = function(keepItem) {
+  const deptId = document.getElementById('dept').value;
+  const subName = document.getElementById('subcat').value;
+  const dept = depts.find(d => d.id === deptId);
+  const sub = dept.subs.find(s => s.name === subName);
+  const itemSel = document.getElementById('itemtype');
+  const current = itemSel.value;
+  itemSel.innerHTML = '';
+  (sub?.items || []).forEach(item => {
+    const o = document.createElement('option');
+    o.value = item; o.textContent = item;
+    itemSel.appendChild(o);
+  });
+  if (keepItem && sub?.items.includes(current)) itemSel.value = current;
+  updateSubIdPreview();
+};
+
+window.updateSubIdPreview = function() {
+  const dept = document.getElementById('dept').value;
+  const src  = document.getElementById('trafficSource').value;
+  const c1   = (document.getElementById('customTag').value.trim().replace(/\s+/g,'-') || 'octa');
+  document.getElementById('subid-preview').textContent = `octaliving-${dept}-${src}-${c1}-living`;
+};
+
+// ── URL parser ─────────────────────────────────────────────────────────
+function parseNameFromUrl(url) {
+  try {
+    // Shopee URL pattern: /Product-Name-Words-i.shopId.itemId
+    const u = new URL(url);
+    const path = u.pathname;
+    // Match the slug before -i.numbers.numbers
+    const match = path.match(/\/([^\/]+)-i\.\d+\.\d+/);
+    if (match) {
+      return match[1]
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, c => c.toUpperCase())
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+    // Fallback: /product/shopId/itemId style
+    const seg = path.split('/').filter(Boolean);
+    if (seg.length && seg[0] !== 'product') {
+      return seg[0].replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()).trim();
+    }
+  } catch(e) {}
+  return '';
+}
+
+// ── Fuzzy match against reference list ────────────────────────────────
+function tokenize(str) {
+  return str.toLowerCase().replace(/[^a-z0-9\s]/g,'').split(/\s+/).filter(Boolean);
+}
+
+function scoreMatch(a, b) {
+  const ta = tokenize(a), tb = tokenize(b);
+  let hits = 0;
+  ta.forEach(t => { if (tb.some(r => r.includes(t) || t.includes(r))) hits++; });
+  return hits / Math.max(ta.length, 1);
+}
+
+function findBestMatch(name) {
+  if (!name) return null;
+  let best = null, bestScore = 0;
+  productRef.forEach(p => {
+    const score = scoreMatch(name, p.name);
+    if (score > bestScore) { bestScore = score; best = p; }
+  });
+  return bestScore >= 0.3 ? { match: best, score: bestScore } : null;
+}
+
+// ── Auto-fill from match ───────────────────────────────────────────────
+function applyMatch(match) {
+  const m = match.match;
+  // Set dept
+  const deptSel = document.getElementById('dept');
+  deptSel.value = m.dept;
+  window.onDeptChange(false);
+  // Set subcat
+  const subSel = document.getElementById('subcat');
+  subSel.value = m.sub;
+  window.onSubcatChange(false);
+  // Set item type
+  const itemSel = document.getElementById('itemtype');
+  if ([...itemSel.options].some(o => o.value === m.type)) itemSel.value = m.type;
+  updateSubIdPreview();
+  // Commission display
+  const commEl = document.getElementById('comm-display');
+  const cls = m.commType === 'high' ? 'comm-high' : m.commType === 'mid' ? 'comm-mid' : 'comm-base';
+  commEl.innerHTML = `<span class="comm-badge ${cls}">${m.xtra ? '🌟 ' : ''}Est. commission: ${m.comm}</span>`;
+  commEl.style.display = 'block';
+  // Banner
+  const pct = Math.round(match.score * 100);
+  document.getElementById('suggest-text').textContent =
+    `Auto-matched to "${m.name}" (${pct}% match) — department, subcategory, and product type filled in. Edit below if needed.`;
+  document.getElementById('suggest-banner').classList.add('show');
+}
+
+function clearSuggest() {
+  document.getElementById('suggest-banner').classList.remove('show');
+  document.getElementById('comm-display').style.display = 'none';
+}
+
+// ── Slug auto-generator ────────────────────────────────────────────────
+function nameToSlug(name) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40);
+}
+
+// ── URL input listener ─────────────────────────────────────────────────
+let suggestTimer = null;
+document.getElementById('productUrl').addEventListener('input', function() {
+  const val = this.value.trim();
+  document.getElementById('url-clear').classList.toggle('show', val.length > 0);
+  clearTimeout(suggestTimer);
+  if (!val) { clearSuggest(); return; }
+  suggestTimer = setTimeout(() => {
+    const parsed = parseNameFromUrl(val);
+    if (parsed) {
+      const nameEl = document.getElementById('productName');
+      if (!nameEl.value || nameEl.dataset.autofilled === 'true') {
+        nameEl.value = parsed;
+        nameEl.dataset.autofilled = 'true';
+        // Auto-slug
+        const slugEl = document.getElementById('slug');
+        if (!slugEl.value || slugEl.dataset.autofilled === 'true') {
+          slugEl.value = nameToSlug(parsed);
+          slugEl.dataset.autofilled = 'true';
+        }
+      }
+      const result = findBestMatch(parsed);
+      if (result) applyMatch(result); else clearSuggest();
+    }
+  }, 400);
+});
+
+// Clear autofill flag if user manually edits name
+document.getElementById('productName').addEventListener('input', function() {
+  this.dataset.autofilled = 'false';
+  clearTimeout(suggestTimer);
+  suggestTimer = setTimeout(() => {
+    const result = findBestMatch(this.value.trim());
+    if (result) applyMatch(result); else clearSuggest();
+  }, 500);
+});
+
+document.getElementById('slug').addEventListener('input', function() {
+  this.dataset.autofilled = 'false';
+});
+
+window.clearUrl = function() {
+  document.getElementById('productUrl').value = '';
+  document.getElementById('productName').value = '';
+  document.getElementById('slug').value = '';
+  document.getElementById('url-clear').classList.remove('show');
+  clearSuggest();
+};
+
+// Init dropdowns
+window.onDeptChange(false);
+
+// ── Hero flag toggle ───────────────────────────────────────────────────
+document.getElementById('heroFlag').addEventListener('change', function() {
+  const card = document.getElementById('hero-card');
+  const extra = document.getElementById('hero-extra');
+  extra.style.display = this.checked ? 'block' : 'none';
+  card.classList.toggle('hero-on', this.checked);
+});
+
+// ── Helpers ────────────────────────────────────────────────────────────
+function showAlert(type, msg) {
+  const el = document.getElementById('alert');
+  el.className = `alert ${type}`; el.textContent = msg;
+}
+function hideAlert() { document.getElementById('alert').className = 'alert'; }
+
+// ── Generate & save ────────────────────────────────────────────────────
+window.generate = async function() {
+  hideAlert();
+  const url      = document.getElementById('productUrl').value.trim();
+  const affId    = document.getElementById('affiliateId').value.trim();
+  const name     = document.getElementById('productName').value.trim();
+  const price    = document.getElementById('productPrice').value.trim();
+  const source   = document.getElementById('source').value;
+  const image    = document.getElementById('productImage').value.trim();
+  const deptId   = document.getElementById('dept').value;
+  const subName  = document.getElementById('subcat').value;
+  const itemName = document.getElementById('itemtype').value;
+  const traffic  = document.getElementById('trafficSource').value;
+  const custom   = document.getElementById('customTag').value.trim().replace(/\s+/g,'-') || 'octa';
+  const slug     = document.getElementById('slug').value.trim();
+
+  const heroFlag  = document.getElementById('heroFlag').checked;
+  const heroBadge = document.getElementById('heroBadge').value.trim() || (heroFlag ? 'New pick' : '');
+  const heroOrig  = document.getElementById('heroOrigPrice').value.trim();
+
+  if (!url)   { showAlert('error','Please paste a Shopee product URL.'); return; }
+  if (!url.includes('shopee.ph')) { showAlert('error','URL must be a Shopee PH link (shopee.ph/…)'); return; }
+  if (!affId) { showAlert('error','Please enter your affiliate ID.'); return; }
+  if (!name)  { showAlert('error','Please enter a product name.'); return; }
+  if (!slug)  { showAlert('error','Please enter a short link slug.'); return; }
+
+  const btn = document.getElementById('btn-generate');
+  btn.disabled = true; btn.textContent = 'Saving to explorer…';
+  showAlert('saving', 'Saving product to department explorer…');
+
+  const encoded  = encodeURIComponent(url);
+  const subId    = `octaliving-${deptId}-${traffic}-${custom}-living`;
+  const fullLink = `https://s.shopee.ph/an_redir?origin_link=${encoded}&affiliate_id=${affId}&sub_id=${subId}`;
+  const shortLink = `ph.octaliving.com/${slug}`;
+  const pKey     = `${deptId}::${subName}::${itemName}`;
+  const productId = Date.now().toString();
+  const docId    = pKey.replace(/[^a-zA-Z0-9_\-]/g,'_') + '__' + productId;
+
+  try {
+    await setDoc(doc(db, 'products', docId), {
+      pKey, id: productId, name, link: fullLink,
+      price, image, source, slug,
+      hero: heroFlag,
+      heroBadge: heroFlag ? heroBadge : '',
+      heroOrigPrice: heroFlag ? heroOrig : '',
+      updatedAt: Date.now()
+    });
+  } catch(e) {
+    showAlert('error','Firebase save failed: ' + e.message);
+    btn.disabled = false; btn.textContent = 'Generate & save to explorer';
+    return;
+  }
+
+  hideAlert();
+  btn.disabled = false; btn.textContent = 'Generate & save to explorer';
+
+  const dept = depts.find(d => d.id === deptId);
+  document.getElementById('saved-location').textContent = `${dept.name} › ${subName} › ${itemName}${heroFlag ? ' · ⭐ Featured on hero' : ''}`;
+  document.getElementById('fullLink').textContent = fullLink;
+  document.getElementById('shortLink').textContent = shortLink;
+  document.getElementById('slugReminder').textContent = slug;
+
+  const items = [
+    ['Department', dept.name], ['Subcategory', subName],
+    ['Product type', itemName], ['Traffic source', traffic],
+    ['Sub ID', subId], ['Platform', source],
+  ];
+  document.getElementById('trackingBreakdown').innerHTML = items.map(([k,v]) =>
+    `<div class="tracking-item"><p>${k}</p><p>${v}</p></div>`).join('');
+
+  document.getElementById('output').style.display = 'block';
+  document.getElementById('output').scrollIntoView({ behavior:'smooth', block:'start' });
+};
+
+window.reset = function() {
+  document.getElementById('output').style.display = 'none';
+  ['productUrl','productName','productPrice','productImage','slug','customTag','heroBadge','heroOrigPrice'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.value = ''; el.dataset.autofilled = 'false'; }
+  });
+  document.getElementById('heroFlag').checked = false;
+  document.getElementById('hero-extra').style.display = 'none';
+  document.getElementById('hero-card').classList.remove('hero-on');
+  clearSuggest();
+  document.getElementById('url-clear').classList.remove('show');
+  window.scrollTo({ top:0, behavior:'smooth' });
+};
+
+window.copyText = function(id, btn) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).catch(() => {
+    const el = document.createElement('textarea');
+    el.value = text; document.body.appendChild(el); el.select();
+    document.execCommand('copy'); document.body.removeChild(el);
+  });
+  const orig = btn.innerHTML;
+  btn.classList.add('copied');
+  btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+  setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = orig; }, 2000);
+};
+</script>
+</body>
+</html>
