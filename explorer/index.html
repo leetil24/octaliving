@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Octa Living — Department Explorer</title>
+  <meta name="description" content="Octa Living department and subcategory explorer — browse all 7 lifestyle departments and their affiliate products." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --white: #ffffff; --gray50: #f7f7f7; --gray100: #f0f0f0; --gray200: #e4e4e4;
+      --gray400: #9a9a9a; --gray700: #3a3a3a; --black: #111111; --gold: #c9a96e; --font: 'DM Sans', sans-serif;
+    }
+    body { font-family: var(--font); background: var(--gray50); color: var(--black); min-height: 100vh; }
+    .sync-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 200; padding: 8px 20px; font-size: 12px; display: flex; align-items: center; gap: 8px; transition: all .3s; pointer-events: none; justify-content: center; }
+    .sync-bar.hidden { opacity: 0; transform: translateY(-100%); }
+    .sync-bar.saving { background: #fff9db; color: #e67700; border-bottom: 1px solid #ffe066; }
+    .sync-bar.saved { background: #ebfbee; color: #2f9e44; border-bottom: 1px solid #b2f2bb; }
+    .sync-bar.error { background: #fff5f5; color: #e03131; border-bottom: 1px solid #ffc9c9; }
+    .sync-bar.loading { background: #eef2ff; color: #3b5bdb; border-bottom: 1px solid #bac8ff; }
+    .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+    .sync-dot.pulse { animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .page-wrap { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; padding-top: 3.5rem; }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-name { font-size: 20px; font-weight: 600; color: var(--black); letter-spacing: -0.02em; }
+    .brand-name span { color: var(--gold); }
+    .top-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .stats { display: flex; gap: 8px; flex-wrap: wrap; }
+    .stat-pill { background: var(--white); border: 1px solid var(--gray200); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--gray700); }
+    .stat-pill b { color: var(--black); font-weight: 600; }
+    .db-status { display: flex; align-items: center; gap: 6px; background: var(--white); border: 1px solid var(--gray200); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--gray400); }
+    .db-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gray200); transition: background .3s; }
+    .db-dot.connected { background: #40c057; }
+    .db-dot.error { background: #fa5252; }
+    .search-wrap { position: relative; margin-bottom: 1.5rem; }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 17px; color: var(--gray400); pointer-events: none; }
+    .search-input { width: 100%; padding: 10px 12px 10px 40px; font-size: 14px; border-radius: 10px; background: var(--white); border: 1px solid var(--gray200); color: var(--black); outline: none; font-family: var(--font); transition: border-color .15s; }
+    .search-input:focus { border-color: var(--black); }
+    .search-input::placeholder { color: var(--gray400); }
+    .clear-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--gray400); font-size: 16px; padding: 4px; display: none; align-items: center; }
+    .clear-btn.visible { display: flex; }
+    .dept-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-bottom: 1.5rem; }
+    .dept-tab { background: var(--white); border: 1px solid var(--gray200); border-radius: 12px; padding: 12px 14px; cursor: pointer; transition: all .15s; text-align: left; }
+    .dept-tab:hover, .dept-tab.active { background: var(--gray50); border-color: var(--gray400); }
+    .dept-num { font-size: 10px; font-weight: 500; color: var(--gray400); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; }
+    .dept-icon { font-size: 20px; margin-bottom: 6px; display: block; }
+    .dept-label { font-size: 14px; font-weight: 600; color: var(--black); }
+    .dept-sub-count { font-size: 11px; color: var(--gray400); margin-top: 2px; }
+    .main-panel { background: var(--white); border: 1px solid var(--gray200); border-radius: 14px; overflow: hidden; }
+    .panel-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--gray100); display: flex; align-items: center; gap: 14px; }
+    .dept-badge { width: 46px; height: 46px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .panel-name { font-size: 18px; font-weight: 600; color: var(--black); }
+    .panel-tagline { font-size: 13px; color: var(--gray400); margin-top: 2px; }
+    .panel-desc { font-size: 13px; color: var(--gray700); line-height: 1.65; padding: .75rem 1.5rem; border-bottom: 1px solid var(--gray100); background: var(--gray50); }
+    .panel-counts { display: flex; gap: 20px; padding: .75rem 1.5rem; border-bottom: 1px solid var(--gray100); }
+    .count-item { font-size: 12px; color: var(--gray400); }
+    .count-item b { font-weight: 600; color: var(--black); }
+    .subcats-wrap { padding: 1rem 1.5rem; }
+    .expand-all-btn { background: none; border: 1px solid var(--gray200); border-radius: 8px; padding: 5px 12px; font-size: 12px; font-family: var(--font); color: var(--gray700); cursor: pointer; transition: all .15s; margin-bottom: 1rem; display: inline-flex; align-items: center; gap: 5px; }
+    .expand-all-btn:hover { background: var(--gray50); color: var(--black); }
+    .subcat-block { margin-bottom: .5rem; border: 1px solid var(--gray200); border-radius: 10px; overflow: hidden; }
+    .subcat-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; cursor: pointer; background: var(--gray50); transition: background .15s; user-select: none; }
+    .subcat-header:hover { background: var(--gray100); }
+    .subcat-name { font-size: 13px; font-weight: 500; color: var(--black); }
+    .subcat-count { font-size: 11px; color: var(--gray400); margin-left: 6px; }
+    .subcat-toggle { font-size: 14px; color: var(--gray400); transition: transform .2s; }
+    .subcat-block.open .subcat-toggle { transform: rotate(180deg); }
+    .subcat-items { display: none; padding: 10px 14px; background: var(--white); flex-wrap: wrap; gap: 6px; }
+    .subcat-block.open .subcat-items { display: flex; }
+    .item-pill { background: var(--gray50); border: 1px solid var(--gray200); border-radius: 20px; padding: 5px 12px; font-size: 12px; color: var(--gray700); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all .15s; font-family: var(--font); }
+    .item-pill:hover { background: var(--black); color: var(--white); border-color: var(--black); }
+    .item-pill:hover .pill-arrow { opacity: 1; }
+    .pill-arrow { font-size: 12px; opacity: 0.4; transition: opacity .15s; }
+    .pill-count { font-size: 10px; font-weight: 600; padding: 1px 5px; border-radius: 10px; }
+    .item-pill.highlight { background: #fff8e1; border-color: #f08c00; color: #e67700; }
+    .search-results { display: none; padding: 1.25rem; }
+    .search-results.visible { display: block; }
+    .search-dept-group { margin-bottom: 1rem; }
+    .search-dept-name { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .search-items-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+    .no-results { text-align: center; padding: 3rem; color: var(--gray400); font-size: 14px; }
+    .no-results i { display: block; font-size: 32px; margin-bottom: .5rem; opacity: .35; }
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 100; opacity: 0; pointer-events: none; transition: opacity .25s; }
+    .overlay.visible { opacity: 1; pointer-events: auto; }
+    .product-panel { position: fixed; top: 0; right: 0; bottom: 0; width: min(440px, 100vw); background: var(--white); border-left: 1px solid var(--gray200); z-index: 101; transform: translateX(100%); transition: transform .28s cubic-bezier(.4,0,.2,1); display: flex; flex-direction: column; overflow: hidden; }
+    .product-panel.open { transform: translateX(0); }
+    .pp-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--gray100); display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .pp-back { background: none; border: 1px solid var(--gray200); border-radius: 8px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--gray700); font-size: 17px; flex-shrink: 0; transition: all .15s; }
+    .pp-back:hover { background: var(--gray50); color: var(--black); }
+    .pp-title-wrap { flex: 1; min-width: 0; }
+    .pp-breadcrumb { font-size: 11px; color: var(--gray400); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pp-title { font-size: 15px; font-weight: 600; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pp-count { font-size: 11px; color: var(--gray400); background: var(--gray50); border: 1px solid var(--gray200); border-radius: 20px; padding: 2px 10px; flex-shrink: 0; white-space: nowrap; }
+    .pp-toolbar { padding: .75rem 1.25rem; border-bottom: 1px solid var(--gray100); display: flex; align-items: center; gap: 8px; flex-shrink: 0; background: var(--gray50); }
+    .pp-search-wrap { flex: 1; position: relative; }
+    .pp-search-icon { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--gray400); pointer-events: none; }
+    .pp-search { width: 100%; padding: 7px 10px 7px 30px; font-size: 12px; border-radius: 8px; border: 1px solid var(--gray200); background: var(--white); color: var(--black); outline: none; font-family: var(--font); transition: border-color .15s; }
+    .pp-search:focus { border-color: var(--black); }
+    .pp-add-btn { background: var(--black); color: var(--white); border: none; border-radius: 8px; padding: 7px 14px; font-size: 12px; font-weight: 500; font-family: var(--font); cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 5px; transition: all .15s; flex-shrink: 0; }
+    .pp-add-btn:hover { background: var(--gold); color: var(--black); }
+    .pp-body { flex: 1; overflow-y: auto; padding: 1rem 1.25rem; }
+    .product-list { display: flex; flex-direction: column; gap: 8px; }
+    .skeleton { background: linear-gradient(90deg, var(--gray100) 25%, var(--gray50) 50%, var(--gray100) 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 8px; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    .skeleton-item { height: 72px; margin-bottom: 8px; border-radius: 12px; }
+    .product-item { background: var(--white); border: 1px solid var(--gray200); border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px; transition: border-color .15s; }
+    .product-item:hover { border-color: var(--gray400); }
+    .product-img { width: 56px; height: 56px; border-radius: 10px; background: var(--gray50); border: 1px solid var(--gray200); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 22px; color: var(--gray200); overflow: hidden; }
+    .product-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+    .product-info { flex: 1; min-width: 0; }
+    .product-name { font-size: 13px; font-weight: 500; color: var(--black); line-height: 1.3; margin-bottom: 5px; }
+    .product-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .affiliate-tag { background: #eef2ff; color: #3b5bdb; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+    .source-tag { background: var(--gray50); color: var(--gray700); font-size: 10px; padding: 2px 7px; border-radius: 4px; border: 1px solid var(--gray200); white-space: nowrap; }
+    .price-tag { background: #ebfbee; color: #2f9e44; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+    .hero-tag { background: #fff9db; color: #e67700; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+    .product-actions { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+    .action-btn { background: none; border: 1px solid var(--gray200); border-radius: 8px; padding: 5px 10px; font-size: 11px; font-family: var(--font); color: var(--gray700); cursor: pointer; display: flex; align-items: center; gap: 4px; white-space: nowrap; transition: all .15s; text-decoration: none; }
+    .action-btn:hover { background: var(--gray50); color: var(--black); }
+    .action-btn.open-link { border-color: var(--gold); color: var(--gold); }
+    .action-btn.open-link:hover { background: var(--gold); color: var(--black); }
+    .action-btn.remove-btn:hover { border-color: #e53935; color: #e53935; }
+    .empty-products { text-align: center; padding: 3rem 1rem; color: var(--gray400); }
+    .empty-products i { font-size: 40px; display: block; margin-bottom: .75rem; opacity: .3; }
+    .empty-products p { font-size: 13px; line-height: 1.6; margin-bottom: 1.25rem; }
+    .empty-add-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--black); color: var(--white); border: none; border-radius: 8px; padding: 9px 18px; font-size: 13px; font-weight: 500; font-family: var(--font); cursor: pointer; transition: all .15s; }
+    .empty-add-btn:hover { background: var(--gold); color: var(--black); }
+    .add-form { background: var(--gray50); border-top: 1px solid var(--gray200); padding: 1.25rem; flex-shrink: 0; display: none; }
+    .add-form.visible { display: block; }
+    .add-form-title { font-size: 13px; font-weight: 600; color: var(--black); margin-bottom: .875rem; display: flex; align-items: center; gap: 6px; }
+    .form-row { margin-bottom: .625rem; }
+    .form-label { font-size: 11px; font-weight: 500; color: var(--gray700); margin-bottom: 4px; display: block; }
+    .form-input { width: 100%; padding: 8px 10px; font-size: 13px; border-radius: 8px; border: 1px solid var(--gray200); background: var(--white); color: var(--black); outline: none; font-family: var(--font); transition: border-color .15s; }
+    .form-input:focus { border-color: var(--black); }
+    .form-input.error { border-color: #e53935; }
+    .form-btns { display: flex; gap: 8px; margin-top: .875rem; }
+    .form-save { background: var(--black); color: var(--white); border: none; border-radius: 8px; padding: 9px 20px; font-size: 13px; font-weight: 500; font-family: var(--font); cursor: pointer; flex: 1; transition: all .15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .form-save:hover { background: var(--gold); color: var(--black); }
+    .form-save:disabled { opacity: .5; cursor: not-allowed; }
+    .form-cancel { background: none; border: 1px solid var(--gray200); border-radius: 8px; padding: 9px 14px; font-size: 13px; font-family: var(--font); color: var(--gray700); cursor: pointer; transition: all .15s; }
+    .form-cancel:hover { background: var(--white); color: var(--black); }
+    @media (max-width: 768px) {
+      .page-wrap { padding: 1rem; padding-top: 3rem; }
+      .dept-grid { grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+<div class="sync-bar hidden" id="sync-bar"><div class="sync-dot" id="sync-dot"></div><span id="sync-msg"></span></div>
+<div class="page-wrap">
+  <div class="top-bar">
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
+        <path d="M15 2 C9 2 4.5 6 3.5 11.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M3.5 11.5 C2.5 14 2.5 16 3.5 18.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M3.5 18.5 C4.5 24 9 28 15 28" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M15 28 C21 28 25.5 24 26.5 18.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M26.5 18.5 C27.5 16 27.5 14 26.5 11.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M26.5 11.5 C25.5 6 21 2 15 2" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <div class="brand-name">Octa<span>Living</span></div>
+    </div>
+    <div class="top-right">
+      <div class="stats">
+        <div class="stat-pill"><b>7</b> departments</div>
+        <div class="stat-pill" id="stat-subs"></div>
+        <div class="stat-pill" id="stat-items"></div>
+      </div>
+      <div class="db-status"><div class="db-dot" id="db-dot"></div><span id="db-label">Connecting…</span></div>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <i class="ti ti-search search-icon"></i>
+    <input class="search-input" id="search" type="search" placeholder="Search departments, subcategories, or products..." />
+    <button class="clear-btn" id="clear-btn"><i class="ti ti-x"></i></button>
+  </div>
+  <div class="dept-grid" id="dept-tabs" role="tablist"></div>
+  <div id="dept-panel" class="main-panel">
+    <div id="panel-header" class="panel-header"></div>
+    <div id="panel-desc" class="panel-desc"></div>
+    <div id="panel-counts" class="panel-counts"></div>
+    <div id="subcats-wrap" class="subcats-wrap"></div>
+  </div>
+  <div id="search-results" class="search-results main-panel"></div>
+</div>
+<div class="overlay" id="overlay"></div>
+<aside class="product-panel" id="product-panel">
+  <div class="pp-header">
+    <button class="pp-back" id="pp-close"><i class="ti ti-arrow-left"></i></button>
+    <div class="pp-title-wrap">
+      <div class="pp-breadcrumb" id="pp-breadcrumb"></div>
+      <div class="pp-title" id="pp-title"></div>
+    </div>
+    <span class="pp-count" id="pp-count">0 items</span>
+  </div>
+  <div class="pp-toolbar">
+    <div class="pp-search-wrap">
+      <i class="ti ti-search pp-search-icon"></i>
+      <input class="pp-search" id="pp-search" type="search" placeholder="Filter products..." />
+    </div>
+    <button class="pp-add-btn" id="pp-add-btn"><i class="ti ti-plus"></i> Add product</button>
+  </div>
+  <div class="pp-body"><div class="product-list" id="product-list"></div></div>
+  <div class="add-form" id="add-form">
+    <div class="add-form-title"><i class="ti ti-link" style="color:var(--gold)"></i> Add affiliate product</div>
+    <div class="form-row"><label class="form-label">Product name *</label><input class="form-input" id="f-name" type="text" placeholder="e.g. Uniqlo Supima Cotton Tee" /></div>
+    <div class="form-row"><label class="form-label">Affiliate link</label><input class="form-input" id="f-link" type="url" placeholder="https://shope.ee/..." /></div>
+    <div class="form-row"><label class="form-label">Price (₱)</label><input class="form-input" id="f-price" type="text" placeholder="e.g. 299" /></div>
+    <div class="form-row"><label class="form-label">Image URL (optional)</label><input class="form-input" id="f-image" type="url" placeholder="https://..." /></div>
+    <div class="form-row"><label class="form-label">Platform / source</label><input class="form-input" id="f-source" type="text" placeholder="e.g. Shopee, Lazada" /></div>
+    <div class="form-btns">
+      <button class="form-cancel" id="form-cancel">Cancel</button>
+      <button class="form-save" id="form-save"><i class="ti ti-cloud-upload"></i> Save to cloud</button>
+    </div>
+  </div>
+</aside>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+  import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyBCshoaZtrhuG1GNmD1MoArfW7wPvTIEto", authDomain: "octa-living.firebaseapp.com",
+    projectId: "octa-living", storageBucket: "octa-living.firebasestorage.app",
+    messagingSenderId: "728259117086", appId: "1:728259117086:web:a0b48da63aa04c41a5ae0f"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const depts = [
+    {id:'spaces',num:'01',name:'Spaces',icon:'ti-home',tagline:'Home · Decor · Condo living',color:'#3b5bdb',bg:'#eef2ff',desc:'Everything that makes a space feel like home. From furniture and lighting to decor and plants, Spaces covers the full spectrum of interior living.',subs:[{name:'Living room',items:['Sofas & couches','Coffee tables','TV stands','Rugs & carpets','Cushions & throws','Wall art & frames','Shelves & storage']},{name:'Bedroom',items:['Bed frames','Pillows & pillowcases','Bed sheets & duvet covers','Bedside tables','Wardrobes & organizers','Mirrors','Blackout curtains']},{name:'Kitchen & dining',items:['Dining tables & chairs','Placemats & table runners','Kitchen organizers','Serving trays','Countertop accessories','Cookware & bakeware']},{name:'Bathroom',items:['Towels & bath sets','Bathroom organizers','Soap dispensers','Shower curtains','Bathroom mats','Toilet accessories']},{name:'Lighting',items:['Floor lamps','Table lamps','Pendant lights','LED strips & ambient','Desk lamps','Candles & holders']},{name:'Plants & outdoors',items:['Indoor plants','Plant pots & planters','Plant stands','Balcony furniture','Garden tools','Artificial plants']},{name:'Decor & accents',items:['Vases & sculptures','Scented candles','Wall clocks','Picture frames','Decorative trays','Seasonal decor']}]},
+    {id:'eats',num:'02',name:'Eats',icon:'ti-coffee',tagline:'Coffee · Food · Kitchen lifestyle',color:'#e67700',bg:'#fff9db',desc:'For those who believe that food is love and coffee is a ritual. Eats covers everything from specialty coffee gear to pantry staples and kitchen tools.',subs:[{name:'Coffee & tea',items:['Pour-over sets','French press & Moka pots','Coffee beans & ground','Tea leaves & sets','Milk frothers','Coffee grinders','Specialty drinkware']},{name:'Drinkware',items:['Tumblers & bottles','Mugs & cups','Wine glasses','Water carafes','Thermos flasks','Cocktail glassware']},{name:'Kitchen tools',items:['Chef knives & sets','Cutting boards','Mixing bowls','Measuring tools','Peelers & graters','Spatulas & utensils','Kitchen scales']},{name:'Cookware',items:['Pots & pans','Cast iron','Non-stick cookware','Woks & steamers','Baking trays & molds','Dutch ovens']},{name:'Pantry & snacks',items:['Artisan coffee & tea','Specialty snacks','Hot sauces & condiments','Healthy snack boxes','Gift food sets','Cooking oils & vinegars']},{name:'Small appliances',items:['Electric kettles','Mini blenders','Toaster ovens','Air fryers','Rice cookers','Coffee makers']}]},
+    {id:'style',num:'03',name:'Style',icon:'ti-shirt',tagline:'Fashion · Accessories · Footwear · All ages',color:'#9c36b5',bg:'#f8f0fc',desc:"Fashion for everyone — from newborns to adults.",subs:[{name:"Men's",items:['Basic & graphic tees','Polo & button-down shirts','Linen & chino trousers','Denim jeans','Shorts','Blazers & sport coats','Hoodies & sweatshirts','Formal wear','Underwear & socks','Sleepwear & loungewear']},{name:"Women's",items:['Tops & blouses','Dresses & jumpsuits','Skirts','Trousers & wide-leg pants','Jeans','Blazers & cardigans','Outerwear & coats','Underwear & intimates','Sleepwear & loungewear','Swimwear']},{name:'Teens',items:['Streetwear & graphic tees','Oversized hoodies','Cargo pants & joggers','Denim & shorts','School & smart casual','Trendy outerwear','Caps & accessories','School bags & backpacks']},{name:'Children',items:['Everyday tops & t-shirts','School uniforms','Shorts & pants','Dresses & skirts','Outerwear & raincoats','Play & sport sets','Pajamas & sleepwear','Kids shoes']},{name:'Babies',items:['Onesies & bodysuits','Rompers & playsuits','Baby sleepwear','Soft-sole shoes & booties','Bibs & feeding sets','Baby hats & mittens','Swaddle blankets','Newborn gift sets']},{name:'Maternity',items:['Maternity tops & blouses','Maternity dresses','Maternity jeans & leggings','Nursing bras & underwear','Postpartum recovery wear','Belly support bands','Maternity swimwear','Gift sets for new moms']},{name:'Plus size',items:['Plus size tops','Plus size dresses','Plus size trousers & jeans','Plus size activewear','Plus size swimwear','Plus size lingerie','Plus size outerwear','Extended sizing basics']},{name:'Activewear',items:['Sports bras & crop tops','Leggings & tights','Running shorts & shirts','Compression gear','Gym sets','Yoga wear','Swim & water sports','Sports socks & underlayers']},{name:'Accessories',items:['Bags & tote bags','Backpacks & sling bags','Wallets & cardholders','Sunglasses','Caps & hats','Belts','Watches','Jewelry & rings','Scarves & wraps']},{name:'Footwear',items:['Sneakers & rubber shoes','Loafers & flats','Sandals & slippers','Boots & ankle boots','Formal shoes','Sports & running shoes','Slip-ons & mules','Kids footwear']}]},
+    {id:'well',num:'04',name:'Well',icon:'ti-heart-rate-monitor',tagline:'Health · Fitness · Self-care',color:'#2f9e44',bg:'#ebfbee',desc:'Wellness is a daily practice, not a destination.',subs:[{name:'Fitness',items:['Yoga mats','Resistance bands','Dumbbells & weights','Jump ropes','Foam rollers','Gym bags','Workout accessories']},{name:'Skincare',items:['Cleansers & toners','Moisturizers & serums','Sunscreen SPF','Face masks & patches','Eye creams','Lip care','Skincare tools']},{name:'Body care',items:['Body lotions & oils','Shower gels & scrubs','Deodorants','Hand creams','Foot care','Bath salts & bombs']},{name:'Hair care',items:['Shampoo & conditioner','Hair oils & serums','Scalp treatments','Hair tools','Hair accessories']},{name:'Sleep & recovery',items:['Weighted blankets','Sleep masks','Pillow mists','White noise devices','Massage tools','Heating pads']},{name:'Supplements',items:['Vitamins & minerals','Collagen & protein','Probiotics','Herbal supplements','Immunity boosters','Sports nutrition']},{name:'Mental wellness',items:['Aromatherapy & diffusers','Meditation cushions','Wellness planners','Stress relief tools','Sound therapy']}]},
+    {id:'move',num:'05',name:'Move',icon:'ti-plane',tagline:'Travel · Bags · Mobility',color:'#e8590c',bg:'#fff4e6',desc:'For people who are always somewhere — or ready to be.',subs:[{name:'Luggage',items:['Carry-on luggage','Check-in luggage','Soft-shell bags','Hard-shell suitcases','Luggage tags & covers','Packing cubes']},{name:'Travel bags',items:['Backpacks','Duffel bags','Crossbody bags','Fanny packs','Laptop-friendly carry-ons','Tote bags']},{name:'Travel accessories',items:['Travel pillows','Eye masks & earplugs','Passport holders','Travel wallets','Power adapters','Packing sets']},{name:'Gadgets on the go',items:['Portable chargers','Travel routers','Noise-cancelling headphones','Compact cameras','Action cameras','Travel speakers']},{name:'Comfort & health',items:['Compression socks','Travel sanitizers','Reusable water bottles','Portable humidifiers','Travel skincare sets']}]},
+    {id:'work',num:'06',name:'Work',icon:'ti-device-laptop',tagline:'Productivity · Desk setup · Audio',color:'#495057',bg:'#f1f3f5',desc:'Your desk is your stage.',subs:[{name:'Desk setup',items:['Desk mats & pads','Monitor stands & risers','Laptop stands','Desk organizers','Cable management','Ergonomic accessories']},{name:'Input devices',items:['Mechanical keyboards','Wireless keyboards','Productivity mice','Trackpads','Drawing tablets','Number pads']},{name:'Audio',items:['Over-ear headphones','In-ear monitors','Wireless earbuds','Desktop speakers','USB microphones','Podcast gear']},{name:'Stationery',items:['Notebooks & journals','Pens & markers','Planners & organizers','Sticky notes','Desk clocks','File organizers']},{name:'Tech accessories',items:['USB hubs & docking stations','Privacy filters','Webcams','Ring lights','HDMI cables & adapters','Portable SSDs']},{name:'Ergonomics',items:['Ergonomic chairs','Standing desk mats','Wrist rests','Lumbar support pillows','Monitor arms','Footrests']}]},
+    {id:'play',num:'07',name:'Play',icon:'ti-confetti',tagline:'Hobbies · Leisure · Lifestyle extras',color:'#c2255c',bg:'#fff0f6',desc:'Life needs more of this.',subs:[{name:'Gaming',items:['Controllers & accessories','Gaming headsets','Gaming chairs','Console accessories','PC peripherals','Gaming mousepads']},{name:'Books & reading',items:['Bestseller fiction','Non-fiction & self-help','Art & design books','Cookbooks','E-readers & cases','Book lights & stands']},{name:'Art & craft',items:['Sketchbooks & art pads','Colored pencils & markers','Watercolor sets','Brush sets','Canvas & paints','Craft kits & DIY']},{name:'Music',items:['Ukuleles & guitars','Capos & tuners','Portable speakers','Record players & vinyl','Instrument accessories']},{name:'Outdoor & recreation',items:['Hammocks','Camping gear','Picnic sets','Sports equipment','Cycling accessories','Beach & pool essentials']},{name:'Puzzles & board games',items:['Jigsaw puzzles','Strategy board games','Card games','Party games','Mini travel games']},{name:'Collectibles & gifts',items:['Gift sets & bundles','Lifestyle collectibles','Candles & diffusers','Desk toys','Seasonal gifts','Personalized items']}]}
+  ];
+  let activeDept = depts[0], openSubs = new Set(), currentPanelKey = null, productStore = {}, unsubscribeListener = null;
+  let syncTimer = null;
+  function showSync(type, msg) {
+    const bar = document.getElementById('sync-bar'), dot = document.getElementById('sync-dot'), txt = document.getElementById('sync-msg');
+    bar.className = `sync-bar ${type}`; dot.className = `sync-dot${type==='saving'||type==='loading'?' pulse':''}`; txt.textContent = msg;
+    clearTimeout(syncTimer); if (type==='saved') syncTimer = setTimeout(()=>bar.classList.add('hidden'), 2500);
+  }
+  function setDbStatus(connected, errored) {
+    const dot = document.getElementById('db-dot'), lbl = document.getElementById('db-label');
+    if (errored) { dot.className='db-dot error'; lbl.textContent='Connection error'; }
+    else if (connected) { dot.className='db-dot connected'; lbl.textContent='Firebase synced'; }
+    else { dot.className='db-dot'; lbl.textContent='Connecting…'; }
+  }
+  function keyToPath(pKey) { return pKey.replace(/[^a-zA-Z0-9_\-]/g,'_'); }
+  async function saveProductToFirestore(pKey, product) {
+    showSync('saving','Saving to cloud…');
+    try { await setDoc(doc(db,'products',keyToPath(pKey)+'__'+product.id),{pKey,...product,updatedAt:Date.now()}); showSync('saved','Saved to cloud ✓'); }
+    catch(e) { console.error(e); showSync('error','Save failed — check connection'); }
+  }
+  async function deleteProductFromFirestore(pKey, productId) {
+    showSync('saving','Deleting…');
+    try { await deleteDoc(doc(db,'products',keyToPath(pKey)+'__'+productId)); showSync('saved','Deleted ✓'); }
+    catch(e) { showSync('error','Delete failed'); }
+  }
+  function startLiveSync() {
+    showSync('loading','Loading products from cloud…');
+    if (unsubscribeListener) unsubscribeListener();
+    unsubscribeListener = onSnapshot(collection(db,'products'), (snapshot) => {
+      productStore = {};
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data(), pKey = data.pKey;
+        if (!productStore[pKey]) productStore[pKey] = [];
+        if (!productStore[pKey].find(p=>p.id===data.id)) productStore[pKey].push({id:data.id,name:data.name,link:data.link||'',price:data.price||'',image:data.image||'',source:data.source||'',hero:data.hero||false});
+      });
+      setDbStatus(true,false); document.getElementById('sync-bar').classList.add('hidden');
+      if (currentPanelKey) renderProducts(currentPanelKey, document.getElementById('pp-search').value.trim());
+      renderPanel(activeDept);
+    }, (error) => { console.error(error); setDbStatus(false,true); showSync('error','Cloud sync error'); });
+  }
+  function calcStats() {
+    const totalSubs = depts.reduce((a,d)=>a+d.subs.length,0), totalItems = depts.reduce((a,d)=>a+d.subs.reduce((b,s)=>b+s.items.length,0),0);
+    document.getElementById('stat-subs').innerHTML=`<b>${totalSubs}</b> subcategories`;
+    document.getElementById('stat-items').innerHTML=`<b>${totalItems}+</b> product types`;
+  }
+  function renderTabs() {
+    document.getElementById('dept-tabs').innerHTML = depts.map(d=>`
+      <button class="dept-tab${d.id===activeDept.id?' active':''}" data-id="${d.id}" role="tab">
+        <div class="dept-num">Dept ${d.num}</div>
+        <i class="ti ${d.icon} dept-icon" style="color:${d.color}"></i>
+        <div class="dept-label">${d.name}</div>
+        <div class="dept-sub-count">${d.subs.length} subcategories</div>
+      </button>`).join('');
+  }
+  function storeKey(deptId,subName,itemName) { return `${deptId}::${subName}::${itemName}`; }
+  function renderPanel(dept) {
+    document.getElementById('panel-header').innerHTML=`<div class="dept-badge" style="background:${dept.bg}"><i class="ti ${dept.icon}" style="color:${dept.color};font-size:22px"></i></div><div><div class="panel-name">${dept.name}</div><div class="panel-tagline">${dept.tagline}</div></div>`;
+    document.getElementById('panel-desc').textContent=dept.desc;
+    const totalItems=dept.subs.reduce((a,s)=>a+s.items.length,0);
+    document.getElementById('panel-counts').innerHTML=`<div class="count-item"><b>${dept.subs.length}</b> subcategories</div><div class="count-item"><b>${totalItems}</b> product types</div>`;
+    document.getElementById('subcats-wrap').innerHTML=
+      `<button class="expand-all-btn" id="expand-all-btn"><i class="ti ti-chevrons-down"></i> Expand all</button>`+
+      dept.subs.map((s,i)=>{
+        const k=dept.id+'-'+i, isOpen=openSubs.has(k);
+        return `<div class="subcat-block${isOpen?' open':''}" data-sub="${k}">
+          <div class="subcat-header"><div style="display:flex;align-items:center;gap:8px"><div style="width:6px;height:6px;border-radius:50%;background:${dept.color};flex-shrink:0"></div><span class="subcat-name">${s.name}</span><span class="subcat-count">${s.items.length} items</span></div><i class="ti ti-chevron-down subcat-toggle"></i></div>
+          <div class="subcat-items">${s.items.map(item=>{
+            const pKey=storeKey(dept.id,s.name,item), count=(productStore[pKey]||[]).length;
+            return `<button class="item-pill" data-dept="${dept.id}" data-sub="${s.name}" data-item="${item}">${item}${count>0?`<span class="pill-count" style="background:${dept.color}22;color:${dept.color}">${count}</span>`:`<i class="ti ti-chevron-right pill-arrow"></i>`}</button>`;
+          }).join('')}</div></div>`;
+      }).join('');
+    document.querySelectorAll('.subcat-header').forEach(h=>{h.addEventListener('click',()=>toggleSub(h.closest('.subcat-block')));});
+    document.querySelectorAll('.item-pill').forEach(pill=>{pill.addEventListener('click',()=>openProductPanel(pill.dataset.dept,pill.dataset.sub,pill.dataset.item));});
+    document.getElementById('expand-all-btn').addEventListener('click',()=>{
+      const blocks=document.querySelectorAll('.subcat-block'), anyOpen=[...blocks].some(b=>b.classList.contains('open'));
+      blocks.forEach(b=>{const k=b.dataset.sub;b.classList.toggle('open',!anyOpen);anyOpen?openSubs.delete(k):openSubs.add(k);});
+    });
+  }
+  function toggleSub(block) { const k=block.dataset.sub,isOpen=block.classList.contains('open');block.classList.toggle('open',!isOpen);isOpen?openSubs.delete(k):openSubs.add(k); }
+  function switchDept(id) {
+    activeDept=depts.find(d=>d.id===id);
+    document.querySelectorAll('.dept-tab').forEach(t=>t.classList.toggle('active',t.dataset.id===id));
+    renderPanel(activeDept);
+    document.getElementById('dept-panel').style.display='block';
+    document.getElementById('search-results').classList.remove('visible');
+  }
+  function openProductPanel(deptId,subName,itemName) {
+    const dept=depts.find(d=>d.id===deptId);
+    currentPanelKey=storeKey(deptId,subName,itemName);
+    document.getElementById('pp-breadcrumb').textContent=`${dept.name} › ${subName}`;
+    document.getElementById('pp-title').textContent=itemName;
+    document.getElementById('pp-search').value='';
+    document.getElementById('add-form').classList.remove('visible');
+    clearAddForm(); renderProducts(currentPanelKey,'');
+    document.getElementById('overlay').classList.add('visible');
+    document.getElementById('product-panel').classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function closePanel() {
+    document.getElementById('overlay').classList.remove('visible');
+    document.getElementById('product-panel').classList.remove('open');
+    document.body.style.overflow=''; currentPanelKey=null; renderPanel(activeDept);
+  }
+  function esc(str) { return str?(str+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''; }
+  function renderProducts(pKey,filter) {
+    const all=productStore[pKey]||[], products=filter?all.filter(p=>p.name.toLowerCase().includes(filter.toLowerCase())||(p.source||'').toLowerCase().includes(filter.toLowerCase())):all;
+    document.getElementById('pp-count').textContent=`${all.length} item${all.length!==1?'s':''}`;
+    const deptId=pKey.split('::')[0], dept=depts.find(d=>d.id===deptId), list=document.getElementById('product-list');
+    if (!products.length) {
+      list.innerHTML=`<div class="empty-products"><i class="ti ti-shopping-bag"></i><p>${filter?'No products match your filter.':'No products added yet.<br>Click <b>Add product</b> to save your first affiliate link.'}</p>${!filter?`<button class="empty-add-btn" id="empty-add-btn"><i class="ti ti-plus"></i> Add first product</button>`:''}</div>`;
+      document.getElementById('empty-add-btn')?.addEventListener('click',showAddForm); return;
+    }
+    list.innerHTML=products.map(p=>`<div class="product-item">
+      <div class="product-img">${p.image?`<img src="${esc(p.image)}" alt="${esc(p.name)}" onerror="this.parentElement.innerHTML='<i class=\\'ti ${dept?.icon||'ti-package'}\\'></i>'">`:`<i class="ti ${dept?.icon||'ti-package'}"></i>`}</div>
+      <div class="product-info"><div class="product-name">${esc(p.name)}</div><div class="product-meta"><span class="affiliate-tag">Affiliate</span>${p.price?`<span class="price-tag">₱${esc(p.price)}</span>`:''} ${p.source?`<span class="source-tag">${esc(p.source)}</span>`:''} ${p.hero?`<span class="hero-tag">⭐ Hero</span>`:''}</div></div>
+      <div class="product-actions">${p.link?`<a href="${esc(p.link)}" class="action-btn open-link" target="_blank"><i class="ti ti-external-link"></i> Open</a>`:`<span class="action-btn" style="opacity:.35;cursor:default"><i class="ti ti-link-off"></i> No link</span>`}<button class="action-btn remove-btn" data-id="${esc(p.id)}"><i class="ti ti-trash"></i> Remove</button></div>
+    </div>`).join('');
+    list.querySelectorAll('.remove-btn').forEach(btn=>btn.addEventListener('click',async()=>await deleteProductFromFirestore(pKey,btn.dataset.id)));
+  }
+  function showAddForm() { document.getElementById('add-form').classList.add('visible'); document.getElementById('f-name').focus(); }
+  function clearAddForm() { ['f-name','f-link','f-price','f-image','f-source'].forEach(id=>{const el=document.getElementById(id);el.value='';el.classList.remove('error');}); }
+  document.getElementById('pp-add-btn').addEventListener('click',showAddForm);
+  document.getElementById('form-cancel').addEventListener('click',()=>{document.getElementById('add-form').classList.remove('visible');clearAddForm();});
+  document.getElementById('form-save').addEventListener('click',async()=>{
+    const name=document.getElementById('f-name').value.trim();
+    if (!name) { document.getElementById('f-name').classList.add('error'); document.getElementById('f-name').focus(); return; }
+    const btn=document.getElementById('form-save'); btn.disabled=true; btn.innerHTML='<i class="ti ti-loader" style="animation:spin 1s linear infinite"></i> Saving…';
+    await saveProductToFirestore(currentPanelKey,{id:Date.now().toString(),name,link:document.getElementById('f-link').value.trim(),price:document.getElementById('f-price').value.trim(),image:document.getElementById('f-image').value.trim(),source:document.getElementById('f-source').value.trim()});
+    document.getElementById('add-form').classList.remove('visible'); clearAddForm(); btn.disabled=false; btn.innerHTML='<i class="ti ti-cloud-upload"></i> Save to cloud';
+  });
+  document.getElementById('f-name').addEventListener('input',()=>document.getElementById('f-name').classList.remove('error'));
+  document.getElementById('f-name').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('form-save').click();});
+  document.getElementById('pp-close').addEventListener('click',closePanel);
+  document.getElementById('overlay').addEventListener('click',closePanel);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel();});
+  document.getElementById('pp-search').addEventListener('input',e=>renderProducts(currentPanelKey,e.target.value.trim()));
+  document.getElementById('dept-tabs').addEventListener('click',e=>{const tab=e.target.closest('.dept-tab');if(tab)switchDept(tab.dataset.id);});
+  const searchEl=document.getElementById('search'), clearBtn=document.getElementById('clear-btn');
+  searchEl.addEventListener('input',()=>{
+    const q=searchEl.value.trim(); clearBtn.classList.toggle('visible',q.length>0);
+    if (q.length>1) {
+      document.getElementById('dept-panel').style.display='none';
+      const res=document.getElementById('search-results'), ql=q.toLowerCase(); let html='';
+      depts.forEach(d=>{
+        const matchedItems=[];
+        d.subs.forEach(s=>{if(s.name.toLowerCase().includes(ql))matchedItems.push(...s.items.map(i=>({sub:s.name,item:i})));else s.items.forEach(item=>{if(item.toLowerCase().includes(ql))matchedItems.push({sub:s.name,item});});});
+        if(d.name.toLowerCase().includes(ql)||matchedItems.length){
+          const items=d.name.toLowerCase().includes(ql)&&!matchedItems.length?d.subs.flatMap(s=>s.items.map(i=>({sub:s.name,item:i}))):matchedItems;
+          html+=`<div class="search-dept-group"><div class="search-dept-name" style="color:${d.color}"><i class="ti ${d.icon}"></i>${d.name}</div><div class="search-items-wrap">${items.map(({sub,item})=>`<button class="item-pill highlight" data-dept="${d.id}" data-sub="${sub}" data-item="${item}">${item} <i class="ti ti-chevron-right pill-arrow"></i></button>`).join('')}</div></div>`;
+        }
+      });
+      res.innerHTML=html||`<div class="no-results"><i class="ti ti-search"></i>No results for "<b>${q}</b>"</div>`;
+      res.querySelectorAll('.item-pill').forEach(pill=>pill.addEventListener('click',()=>openProductPanel(pill.dataset.dept,pill.dataset.sub,pill.dataset.item)));
+      res.classList.add('visible');
+    } else { document.getElementById('dept-panel').style.display='block'; document.getElementById('search-results').classList.remove('visible'); }
+  });
+  clearBtn.addEventListener('click',()=>{searchEl.value='';clearBtn.classList.remove('visible');document.getElementById('dept-panel').style.display='block';document.getElementById('search-results').classList.remove('visible');searchEl.focus();});
+  const style=document.createElement('style'); style.textContent='@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}'; document.head.appendChild(style);
+  calcStats(); renderTabs(); renderPanel(activeDept); startLiveSync();
+</script>
+</body>
+</html>
