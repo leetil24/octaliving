@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Octa Living — Curated Lifestyle Picks Philippines</title>
+  <meta name="description" content="Octa Living is the Philippines' curated lifestyle destination — hand-picked home decor, coffee, fashion, wellness, travel gear, work setup, and more." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --white: #ffffff; --gray50: #f7f7f7; --gray100: #f0f0f0; --gray200: #e4e4e4;
+      --gray400: #9a9a9a; --gray700: #3a3a3a; --black: #111111;
+      --gold: #c9a96e; --golddark: #a8843f; --red: #e53935;
+      --font: 'DM Sans', sans-serif;
+    }
+    body { font-family: var(--font); background: var(--gray50); color: var(--black); }
+    .topbar { background: var(--black); color: #fff; font-size: 12px; display: flex; align-items: center; justify-content: space-between; padding: 8px 32px; }
+    .topbar-deal { background: var(--gold); color: var(--black); font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 3px; }
+    .topbar-text { opacity: 0.7; margin-left: 12px; }
+    .topbar-right { display: flex; gap: 16px; opacity: 0.6; font-size: 11px; }
+    .topbar-link { color: #fff; text-decoration: none; }
+    .topbar-link:hover { opacity: 1; text-decoration: underline; }
+    .nav-main { background: var(--white); border-bottom: 1px solid var(--gray200); padding: 0 32px; display: flex; align-items: center; height: 64px; position: sticky; top: 0; z-index: 50; gap: 16px; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+    .nav-logo-wordmark { font-size: 17px; font-weight: 600; color: var(--black); letter-spacing: -0.02em; }
+    .nav-logo-wordmark span { color: var(--gold); }
+    .nav-search { flex: 1; display: flex; align-items: center; background: var(--gray50); border: 1px solid var(--gray200); border-radius: 8px; padding: 0 14px; height: 40px; gap: 10px; max-width: 520px; }
+    .nav-search:focus-within { border-color: var(--black); }
+    .nav-search i { color: var(--gray400); font-size: 17px; }
+    .nav-search input { flex: 1; border: none; background: none; font-family: var(--font); font-size: 13px; color: var(--black); outline: none; }
+    .nav-search input::placeholder { color: var(--gray400); }
+    .nav-search-btn { background: var(--black); color: #fff; border: none; border-radius: 6px; padding: 5px 14px; font-family: var(--font); font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+    .nav-search-btn:hover { background: var(--gold); color: var(--black); }
+    .nav-actions { display: flex; gap: 4px; margin-left: auto; }
+    .nav-action-btn { background: none; border: none; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--gray700); font-size: 20px; }
+    .nav-action-btn:hover { background: var(--gray50); color: var(--black); }
+    .nav-cats { background: var(--white); border-bottom: 1px solid var(--gray200); padding: 0 32px; display: flex; align-items: center; position: sticky; top: 64px; z-index: 49; }
+    .nav-all-btn { display: flex; align-items: center; gap: 7px; background: var(--black); color: #fff; border: none; border-radius: 6px; padding: 7px 14px; font-family: var(--font); font-size: 12px; font-weight: 500; cursor: pointer; margin-right: 8px; flex-shrink: 0; }
+    .nav-all-btn:hover { background: var(--gold); color: var(--black); }
+    .cat-nav { display: flex; align-items: stretch; overflow-x: auto; scrollbar-width: none; }
+    .cat-nav::-webkit-scrollbar { display: none; }
+    .cat-link { display: flex; align-items: center; gap: 5px; color: var(--gray700); font-size: 13px; padding: 11px 14px; white-space: nowrap; border-bottom: 2px solid transparent; transition: color .15s, border-color .15s; position: relative; cursor: pointer; text-decoration: none; }
+    .cat-link:hover, .cat-link.active { color: var(--black); border-bottom-color: var(--gold); }
+    .cat-link .chev { font-size: 13px; opacity: .4; }
+    .cat-link:hover .cat-dropdown { display: block; }
+    .cat-dropdown { display: none; position: absolute; top: 100%; left: 0; background: var(--white); border: 1px solid var(--gray200); border-radius: 0 0 10px 10px; min-width: 210px; z-index: 200; padding: 8px 0; box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+    .cat-dropdown a { display: flex; align-items: center; gap: 10px; padding: 9px 18px; font-size: 13px; color: var(--gray700); text-decoration: none; transition: background .15s; }
+    .cat-dropdown a:hover { background: var(--gray50); color: var(--black); }
+    .cat-dropdown-divider { height: 1px; background: var(--gray100); margin: 6px 0; }
+    .cat-dropdown-all { font-size: 12px !important; font-weight: 500 !important; color: var(--gold) !important; }
+    .nav-right-links { margin-left: auto; display: flex; align-items: center; flex-shrink: 0; }
+    .nav-right-link { font-size: 12px; color: var(--gray700); text-decoration: none; padding: 11px 12px; display: flex; align-items: center; gap: 5px; }
+    .nav-right-link:hover { color: var(--black); }
+    .hero-wrap { display: grid; grid-template-columns: 1fr 340px; gap: 12px; padding: 12px 32px; }
+    .hero-main { background: var(--black); border-radius: 12px; overflow: hidden; min-height: 340px; display: flex; flex-direction: column; justify-content: flex-end; padding: 36px; position: relative; }
+    .hero-bg { position: absolute; inset: 0; opacity: .06; pointer-events: none; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--gold); color: var(--black); font-size: 11px; font-weight: 600; padding: 5px 12px; border-radius: 20px; margin-bottom: 16px; width: fit-content; }
+    .hero-title { font-size: 38px; font-weight: 600; color: #fff; line-height: 1.1; margin-bottom: 10px; letter-spacing: -.02em; max-width: 480px; }
+    .hero-title span { color: var(--gold); }
+    .hero-sub { font-size: 14px; color: #fff; opacity: .6; margin-bottom: 24px; max-width: 420px; line-height: 1.65; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--gold); color: var(--black); border: none; border-radius: 8px; padding: 12px 24px; font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; }
+    .btn-primary:hover { background: var(--golddark); color: #fff; }
+    .btn-ghost { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.1); color: #fff; border: 1px solid rgba(255,255,255,.2); border-radius: 8px; padding: 12px 20px; font-family: var(--font); font-size: 13px; cursor: pointer; text-decoration: none; }
+    .btn-ghost:hover { background: rgba(255,255,255,.2); }
+    .hero-side { display: flex; flex-direction: column; gap: 12px; }
+    .side-card { background: var(--white); border-radius: 12px; border: 1px solid var(--gray200); padding: 20px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; position: relative; overflow: hidden; transition: border-color .2s, transform .2s; }
+    .side-card:hover { border-color: var(--gray400); transform: translateY(-2px); }
+    .side-card-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 4px; margin-bottom: 12px; width: fit-content; }
+    .badge-new { background: #e8f5e9; color: #1b5e20; }
+    .badge-sale { background: #fff3e0; color: #bf360c; }
+    .side-card-title { font-size: 16px; font-weight: 600; color: var(--black); line-height: 1.2; margin-bottom: 5px; }
+    .side-card-sub { font-size: 12px; color: var(--gray400); margin-bottom: 12px; }
+    .side-card-price { display: flex; align-items: baseline; gap: 8px; margin-bottom: 14px; }
+    .price-current { font-size: 20px; font-weight: 600; color: var(--black); }
+    .price-original { font-size: 13px; color: var(--gray400); text-decoration: line-through; }
+    .price-off { font-size: 11px; font-weight: 600; color: var(--red); }
+    .side-card-cta { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--gold); text-decoration: none; }
+    .side-card-img { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); opacity: .07; font-size: 64px; color: var(--black); pointer-events: none; }
+    .hero-cats-strip { display: flex; gap: 8px; padding: 0 32px 12px; overflow-x: auto; scrollbar-width: none; }
+    .hero-cats-strip::-webkit-scrollbar { display: none; }
+    .cat-pill { display: inline-flex; align-items: center; gap: 6px; background: var(--white); border: 1px solid var(--gray200); border-radius: 20px; padding: 7px 14px; font-size: 12px; font-weight: 500; color: var(--gray700); cursor: pointer; white-space: nowrap; transition: all .15s; flex-shrink: 0; text-decoration: none; }
+    .cat-pill:hover, .cat-pill.active { background: var(--black); color: #fff; border-color: var(--black); }
+    .trust-bar { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--white); border-top: 1px solid var(--gray100); border-bottom: 1px solid var(--gray100); }
+    .trust-item { display: flex; align-items: center; gap: 12px; padding: 16px 24px; border-right: 1px solid var(--gray100); }
+    .trust-item:last-child { border-right: none; }
+    .trust-icon { font-size: 22px; color: var(--gold); flex-shrink: 0; }
+    .trust-title { font-size: 13px; font-weight: 600; color: var(--black); }
+    .trust-sub { font-size: 11px; color: var(--gray400); margin-top: 2px; }
+    .section-wrap { padding: 32px 32px 40px; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
+    .section-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+    .section-title { font-size: 22px; font-weight: 600; color: var(--black); letter-spacing: -.02em; display: flex; align-items: center; gap: 10px; }
+    .section-view-all { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--black); text-decoration: none; border: 1px solid var(--gray200); border-radius: 8px; padding: 8px 16px; background: var(--white); white-space: nowrap; }
+    .section-view-all:hover { background: var(--black); color: #fff; border-color: var(--black); }
+    .filter-row { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; scrollbar-width: none; }
+    .filter-row::-webkit-scrollbar { display: none; }
+    .filter-btn { background: var(--white); border: 1px solid var(--gray200); border-radius: 6px; padding: 6px 14px; font-family: var(--font); font-size: 12px; font-weight: 500; color: var(--gray700); cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: all .15s; }
+    .filter-btn:hover, .filter-btn.active { background: var(--black); color: #fff; border-color: var(--black); }
+    .live-badge { display: inline-flex; align-items: center; gap: 5px; background: #ebfbee; border: 1px solid #b2f2bb; color: #2f9e44; font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 20px; vertical-align: middle; }
+    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: #2f9e44; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .product-card { background: var(--white); border: 1px solid var(--gray200); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: border-color .2s, transform .2s; }
+    .product-card:hover { border-color: var(--gray400); transform: translateY(-2px); }
+    .product-card:hover .card-shop-btn { opacity: 1; transform: translateY(0); }
+    .card-img-wrap { background: var(--gray50); height: 180px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+    .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .card-img-icon { font-size: 64px; color: var(--gray200); transition: transform .3s; }
+    .product-card:hover .card-img-icon { transform: scale(1.08); }
+    .card-badges { position: absolute; top: 10px; left: 10px; display: flex; flex-direction: column; gap: 5px; }
+    .badge { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 4px; width: fit-content; }
+    .badge-newp { background: #e8f5e9; color: #1b5e20; }
+    .badge-hot { background: #fff8e1; color: #e65100; }
+    .badge-deal { background: #fff0f0; color: #c62828; }
+    .card-wish { position: absolute; top: 10px; right: 10px; background: var(--white); border: 1px solid var(--gray200); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; color: var(--gray400); transition: all .15s; }
+    .card-wish:hover { color: var(--red); border-color: var(--red); }
+    .card-body { padding: 14px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+    .card-cat { font-size: 10px; font-weight: 500; color: var(--gray400); letter-spacing: .06em; text-transform: uppercase; }
+    .card-name { font-size: 14px; font-weight: 500; color: var(--black); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-price-row { display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; margin-top: auto; padding-top: 6px; }
+    .card-price { font-size: 16px; font-weight: 600; color: var(--black); }
+    .card-shop-btn { display: flex; align-items: center; justify-content: center; gap: 7px; background: #ee4d2d; color: #fff; border: none; border-radius: 0 0 11px 11px; padding: 11px; font-family: var(--font); font-size: 12px; font-weight: 500; cursor: pointer; opacity: 0; transform: translateY(4px); transition: opacity .2s, transform .2s; width: 100%; text-decoration: none; }
+    .card-shop-btn:hover { background: #d43b1f; }
+    .shopee-logo { font-weight: 700; }
+    .skeleton { background: linear-gradient(90deg, var(--gray100) 25%, var(--gray50) 50%, var(--gray100) 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 8px; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    .skeleton-card { background: var(--white); border: 1px solid var(--gray200); border-radius: 12px; overflow: hidden; }
+    .skeleton-img { height: 180px; }
+    .skeleton-body { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+    .skeleton-line { height: 12px; border-radius: 4px; }
+    .arrivals-bg { background: var(--white); border-top: 1px solid var(--gray100); }
+    .scroll-btns { display: flex; gap: 8px; }
+    .scroll-btn { background: var(--white); border: 1px solid var(--gray200); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; color: var(--gray700); transition: all .15s; }
+    .scroll-btn:hover { background: var(--black); color: #fff; border-color: var(--black); }
+    .section-header-right { display: flex; align-items: center; gap: 10px; }
+    .arrivals-track { display: flex; gap: 12px; overflow-x: auto; scroll-behavior: smooth; scrollbar-width: none; padding-bottom: 4px; min-height: 260px; }
+    .arrivals-track::-webkit-scrollbar { display: none; }
+    .arrival-card { background: var(--white); border: 1px solid var(--gray200); border-radius: 12px; overflow: hidden; flex: 0 0 220px; display: flex; flex-direction: column; transition: border-color .2s, transform .2s; }
+    .arrival-card:hover { border-color: var(--gray400); transform: translateY(-2px); }
+    .arrival-card:hover .mini-shop-btn { opacity: 1; transform: translateY(0); }
+    .arrival-card:hover .card-img-icon { transform: scale(1.08); }
+    .a-img { height: 160px; background: var(--gray50); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+    .a-img img { width: 100%; height: 100%; object-fit: cover; }
+    .new-badge { position: absolute; top: 10px; left: 10px; background: #e8f5e9; color: #1b5e20; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 4px; }
+    .a-body { padding: 12px; flex: 1; display: flex; flex-direction: column; gap: 5px; }
+    .a-cat { font-size: 10px; font-weight: 500; color: var(--gray400); letter-spacing: .06em; text-transform: uppercase; }
+    .a-name { font-size: 13px; font-weight: 500; color: var(--black); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .a-price { font-size: 15px; font-weight: 600; color: var(--black); margin-top: auto; padding-top: 4px; }
+    .mini-shop-btn { display: flex; align-items: center; justify-content: center; gap: 6px; background: #ee4d2d; color: #fff; border: none; border-radius: 0 0 11px 11px; padding: 10px; font-family: var(--font); font-size: 11px; font-weight: 500; cursor: pointer; opacity: 0; transform: translateY(4px); transition: opacity .2s, transform .2s; width: 100%; text-decoration: none; }
+    .mini-shop-btn:hover { background: #d43b1f; }
+    .empty-state { text-align: center; padding: 3rem 1rem; color: var(--gray400); grid-column: 1/-1; }
+    .empty-state i { font-size: 40px; display: block; margin-bottom: .75rem; opacity: .3; }
+    .empty-state p { font-size: 13px; line-height: 1.6; }
+    .empty-state a { color: var(--gold); text-decoration: none; font-weight: 500; }
+    .dept-block { background: var(--white); border: 1px solid var(--gray200); border-radius: 14px; overflow: hidden; margin-bottom: 16px; }
+    .dept-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; cursor: pointer; transition: background .15s; user-select: none; border-bottom: 1px solid transparent; }
+    .dept-block.open .dept-header { border-bottom-color: var(--gray100); }
+    .dept-header:hover { background: var(--gray50); }
+    .dept-header-left { display: flex; align-items: center; gap: 14px; }
+    .dept-icon-wrap { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .dept-label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 3px; }
+    .dept-name { font-size: 16px; font-weight: 600; color: var(--black); }
+    .dept-count { font-size: 12px; color: var(--gray400); margin-top: 1px; }
+    .dept-header-right { display: flex; align-items: center; gap: 12px; }
+    .dept-product-count { font-size: 11px; font-weight: 600; color: var(--gold); background: #fdf8f1; border: 1px solid #f0d9b0; padding: 2px 8px; border-radius: 10px; }
+    .dept-view-all { font-size: 12px; font-weight: 500; color: var(--gold); text-decoration: none; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+    .dept-chevron { font-size: 18px; color: var(--gray400); transition: transform .25s; }
+    .dept-block.open .dept-chevron { transform: rotate(180deg); }
+    .dept-body { display: none; padding: 20px 24px; }
+    .dept-block.open .dept-body { display: block; }
+    .mini-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; min-height: 80px; }
+    .mini-card { background: var(--gray50); border: 1px solid var(--gray200); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; transition: border-color .2s, transform .2s; }
+    .mini-card:hover { border-color: var(--gray400); transform: translateY(-2px); }
+    .mini-card:hover .mini-card-shop { opacity: 1; transform: translateY(0); }
+    .mini-card:hover .mini-icon { transform: scale(1.1); }
+    .mini-img { height: 110px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+    .mini-img img { width: 100%; height: 100%; object-fit: cover; }
+    .mini-icon { font-size: 44px; color: var(--gray200); transition: transform .3s; }
+    .mini-body { padding: 10px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .mini-name { font-size: 12px; font-weight: 500; color: var(--black); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .mini-price { font-size: 13px; font-weight: 600; color: var(--black); margin-top: auto; }
+    .mini-card-shop { display: flex; align-items: center; justify-content: center; gap: 5px; background: #ee4d2d; color: #fff; border: none; border-radius: 0 0 9px 9px; padding: 8px; font-family: var(--font); font-size: 11px; font-weight: 500; cursor: pointer; opacity: 0; transform: translateY(3px); transition: opacity .2s, transform .2s; width: 100%; text-decoration: none; }
+    .mini-card-shop:hover { background: #d43b1f; }
+    .dept-spaces .dept-icon-wrap { background: #f0f4ff; color: #3b5bdb; } .dept-spaces .dept-label { color: #3b5bdb; } .dept-spaces .mini-img { background: #f0f4ff; }
+    .dept-eats .dept-icon-wrap { background: #fff8e1; color: #f08c00; } .dept-eats .dept-label { color: #f08c00; } .dept-eats .mini-img { background: #fff8e1; }
+    .dept-style .dept-icon-wrap { background: #f8f0fc; color: #9c36b5; } .dept-style .dept-label { color: #9c36b5; } .dept-style .mini-img { background: #f8f0fc; }
+    .dept-well .dept-icon-wrap { background: #f0fdf4; color: #2f9e44; } .dept-well .dept-label { color: #2f9e44; } .dept-well .mini-img { background: #f0fdf4; }
+    .dept-move .dept-icon-wrap { background: #fff4e6; color: #e8590c; } .dept-move .dept-label { color: #e8590c; } .dept-move .mini-img { background: #fff4e6; }
+    .dept-work .dept-icon-wrap { background: #f1f3f5; color: #495057; } .dept-work .dept-label { color: #495057; } .dept-work .mini-img { background: #f1f3f5; }
+    .dept-play .dept-icon-wrap { background: #fff0f6; color: #c2255c; } .dept-play .dept-label { color: #c2255c; } .dept-play .mini-img { background: #fff0f6; }
+    .newsletter-section { background: var(--black); padding: 64px 32px; position: relative; overflow: hidden; }
+    .nl-bg { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .nl-bg-circle { position: absolute; border-radius: 50%; opacity: .04; background: #fff; }
+    .nl-bg-circle-1 { width: 500px; height: 500px; top: -200px; right: -100px; }
+    .nl-bg-circle-2 { width: 300px; height: 300px; bottom: -100px; left: -80px; }
+    .nl-bg-dots { position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(255,255,255,.06) 1px, transparent 1px); background-size: 28px 28px; }
+    .nl-inner { position: relative; z-index: 2; max-width: 720px; margin: 0 auto; text-align: center; }
+    .nl-badge { display: inline-flex; align-items: center; gap: 7px; background: rgba(201,169,110,.15); border: 1px solid rgba(201,169,110,.3); color: var(--gold); font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 6px 14px; border-radius: 20px; margin-bottom: 24px; }
+    .nl-heading { font-size: 36px; font-weight: 600; color: #fff; line-height: 1.15; letter-spacing: -.02em; margin-bottom: 14px; }
+    .nl-heading span { color: var(--gold); }
+    .nl-sub { font-size: 15px; color: #fff; opacity: .55; line-height: 1.65; margin-bottom: 36px; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .nl-perks { display: flex; align-items: center; justify-content: center; gap: 24px; margin-bottom: 36px; flex-wrap: wrap; }
+    .nl-perk { display: flex; align-items: center; gap: 7px; font-size: 12px; color: #fff; opacity: .6; }
+    .nl-perk i { font-size: 16px; color: var(--gold); opacity: 1; }
+    .nl-perk-divider { width: 1px; height: 16px; background: rgba(255,255,255,.15); }
+    .nl-form { display: flex; gap: 10px; max-width: 480px; margin: 0 auto 16px; }
+    .nl-input-wrap { flex: 1; position: relative; }
+    .nl-input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 18px; color: rgba(255,255,255,.3); pointer-events: none; }
+    .nl-input { width: 100%; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); border-radius: 10px; padding: 14px 14px 14px 42px; font-family: var(--font); font-size: 14px; color: #fff; outline: none; }
+    .nl-input:focus { border-color: var(--gold); }
+    .nl-input::placeholder { color: rgba(255,255,255,.3); }
+    .nl-submit { background: var(--gold); color: var(--black); border: none; border-radius: 10px; padding: 14px 24px; font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+    .nl-submit:hover { background: var(--golddark); color: #fff; }
+    .nl-privacy { font-size: 11px; color: #fff; opacity: .3; }
+    .nl-privacy a { color: var(--gold); text-decoration: none; }
+    .nl-success { display: none; flex-direction: column; align-items: center; gap: 12px; padding: 28px 0; }
+    .nl-success-icon { width: 56px; height: 56px; background: rgba(201,169,110,.15); border: 1px solid rgba(201,169,110,.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; color: var(--gold); }
+    .nl-success-title { font-size: 20px; font-weight: 600; color: #fff; }
+    .nl-success-sub { font-size: 14px; color: #fff; opacity: .5; }
+    .nl-social-proof { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 40px; padding-top: 32px; border-top: 1px solid rgba(255,255,255,.08); flex-wrap: wrap; }
+    .nl-avatars { display: flex; }
+    .nl-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--black); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #fff; margin-left: -8px; }
+    .nl-avatar:first-child { margin-left: 0; }
+    .nl-proof-text { font-size: 13px; color: #fff; opacity: .5; }
+    .nl-proof-text strong { color: var(--gold); opacity: 1; }
+    .footer-main { background: var(--black); padding: 56px 32px 40px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; max-width: 1200px; margin: 0 auto; padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .footer-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; text-decoration: none; }
+    .footer-logo-name { font-size: 18px; font-weight: 600; color: #fff; letter-spacing: -.02em; }
+    .footer-logo-name span { color: var(--gold); }
+    .footer-tagline { font-size: 13px; color: #fff; opacity: .4; line-height: 1.65; margin-bottom: 20px; max-width: 240px; }
+    .footer-socials { display: flex; gap: 8px; }
+    .social-btn { width: 36px; height: 36px; border-radius: 8px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; color: #fff; opacity: .6; font-size: 17px; text-decoration: none; transition: all .15s; }
+    .social-btn:hover { background: var(--gold); border-color: var(--gold); color: var(--black); opacity: 1; }
+    .footer-contact { margin-top: 20px; }
+    .footer-contact-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #fff; opacity: .4; margin-bottom: 7px; text-decoration: none; font-style: normal; }
+    .footer-contact-item:hover { opacity: .8; }
+    .footer-contact-item i { font-size: 14px; color: var(--gold); opacity: 1; }
+    .footer-col-title { font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #fff; opacity: .5; margin-bottom: 16px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 13px; color: #fff; opacity: .5; text-decoration: none; transition: opacity .15s; display: flex; align-items: center; gap: 6px; }
+    .footer-links a:hover { opacity: 1; }
+    .link-badge { background: var(--gold); color: var(--black); font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 3px; opacity: 1; }
+    .footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .footer-copy { font-size: 12px; color: #fff; opacity: .3; }
+    .footer-copy a { color: #fff; opacity: .6; text-decoration: none; }
+    .footer-legal { display: flex; gap: 20px; }
+    .footer-legal a { font-size: 12px; color: #fff; opacity: .3; text-decoration: none; }
+    .footer-legal a:hover { opacity: .8; }
+    .footer-locale { font-size: 12px; color: #fff; opacity: .3; display: flex; align-items: center; gap: 6px; }
+    .footer-locale i { color: var(--gold); opacity: 1; font-size: 14px; }
+    .disclosure-bar { background: #fff9db; border-top: 1px solid #ffe066; padding: 10px 32px; text-align: center; font-size: 11px; color: #7a5500; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .back-top { position: fixed; bottom: 24px; right: 24px; background: var(--black); color: #fff; border: 1px solid rgba(255,255,255,.1); width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; transition: all .2s; opacity: 0; pointer-events: none; z-index: 999; text-decoration: none; }
+    .back-top.visible { opacity: 1; pointer-events: auto; }
+    .back-top:hover { background: var(--gold); color: var(--black); }
+    @media (max-width: 900px) {
+      .products-grid { grid-template-columns: repeat(2,1fr); }
+      .mini-grid { grid-template-columns: repeat(3,1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .trust-bar { grid-template-columns: repeat(2,1fr); }
+      .trust-item:nth-child(2) { border-right: none; }
+      .trust-item:nth-child(3) { border-top: 1px solid var(--gray100); }
+      .trust-item:nth-child(4) { border-top: 1px solid var(--gray100); border-right: none; }
+    }
+    @media (max-width: 768px) {
+      .topbar-right,.nav-right-links { display: none; }
+      .topbar,.nav-main,.nav-cats,.section-wrap,.newsletter-section,.footer-main,.disclosure-bar { padding-left: 16px; padding-right: 16px; }
+      .hero-wrap { grid-template-columns: 1fr; padding: 10px 12px; }
+      .hero-main { min-height: 280px; padding: 24px 20px; }
+      .hero-title { font-size: 26px; }
+      .hero-side { flex-direction: row; }
+      .hero-cats-strip { padding: 0 12px 10px; }
+      .products-grid { grid-template-columns: repeat(2,1fr); gap: 8px; }
+      .card-shop-btn,.mini-shop-btn,.mini-card-shop { opacity: 1; transform: translateY(0); }
+      .mini-grid { grid-template-columns: repeat(2,1fr); }
+      .arrival-card { flex: 0 0 170px; }
+      .nl-heading { font-size: 26px; }
+      .nl-form { flex-direction: column; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+    }
+    @media (max-width: 480px) {
+      .hero-side { flex-direction: column; }
+      .products-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div><span class="topbar-deal">NEW IN</span><span class="topbar-text">Fresh picks added weekly · All products link to verified Shopee sellers</span></div>
+  <div class="topbar-right">
+    <a href="https://explorer.octaliving.com" class="topbar-link">Department explorer</a>
+    <a href="https://tools.octaliving.com" class="topbar-link">Link generator</a>
+    <a href="#newsletter" class="topbar-link">Get deals by email</a>
+  </div>
+</div>
+
+<nav class="nav-main" aria-label="Main navigation">
+  <a href="/" class="nav-logo">
+    <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
+      <path d="M15 2 C9 2 4.5 6 3.5 11.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M3.5 11.5 C2.5 14 2.5 16 3.5 18.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M3.5 18.5 C4.5 24 9 28 15 28" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M15 28 C21 28 25.5 24 26.5 18.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M26.5 18.5 C27.5 16 27.5 14 26.5 11.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M26.5 11.5 C25.5 6 21 2 15 2" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <span class="nav-logo-wordmark">Octa<span>Living</span></span>
+  </a>
+  <div class="nav-search">
+    <i class="ti ti-search"></i>
+    <input type="text" placeholder="Search curated picks — home, coffee, wellness..." />
+    <button class="nav-search-btn">Search</button>
+  </div>
+  <div class="nav-actions">
+    <button class="nav-action-btn"><i class="ti ti-heart"></i></button>
+    <button class="nav-action-btn"><i class="ti ti-share"></i></button>
+  </div>
+</nav>
+
+<div class="nav-cats">
+  <button class="nav-all-btn"><i class="ti ti-layout-grid"></i> All departments</button>
+  <div class="cat-nav">
+    <div class="cat-link active"><i class="ti ti-home"></i> Spaces <i class="ti ti-chevron-down chev"></i>
+      <div class="cat-dropdown"><a href="#"><i class="ti ti-sofa"></i>Living room</a><a href="#"><i class="ti ti-bed"></i>Bedroom</a><a href="#"><i class="ti ti-tool-kitchen-2"></i>Kitchen & dining</a><a href="#"><i class="ti ti-bath"></i>Bathroom</a><div class="cat-dropdown-divider"></div><a href="https://explorer.octaliving.com" class="cat-dropdown-all">View all Spaces →</a></div>
+    </div>
+    <div class="cat-link"><i class="ti ti-coffee"></i> Eats <i class="ti ti-chevron-down chev"></i>
+      <div class="cat-dropdown"><a href="#"><i class="ti ti-coffee"></i>Coffee & tea</a><a href="#"><i class="ti ti-cookie"></i>Snacks & pantry</a><a href="#"><i class="ti ti-tool-kitchen-2"></i>Kitchen tools</a><div class="cat-dropdown-divider"></div><a href="https://explorer.octaliving.com" class="cat-dropdown-all">View all Eats →</a></div>
+    </div>
+    <div class="cat-link"><i class="ti ti-shirt"></i> Style <i class="ti ti-chevron-down chev"></i>
+      <div class="cat-dropdown"><a href="#"><i class="ti ti-shirt"></i>Tops & tees</a><a href="#"><i class="ti ti-backpack"></i>Bags & accessories</a><a href="#"><i class="ti ti-shoe"></i>Footwear</a><div class="cat-dropdown-divider"></div><a href="https://explorer.octaliving.com" class="cat-dropdown-all">View all Style →</a></div>
+    </div>
+    <div class="cat-link"><i class="ti ti-heart-rate-monitor"></i> Well <i class="ti ti-chevron-down chev"></i>
+      <div class="cat-dropdown"><a href="#"><i class="ti ti-yoga"></i>Fitness</a><a href="#"><i class="ti ti-droplet"></i>Skincare</a><a href="#"><i class="ti ti-moon"></i>Sleep & recovery</a><div class="cat-dropdown-divider"></div><a href="https://explorer.octaliving.com" class="cat-dropdown-all">View all Well →</a></div>
+    </div>
+    <div class="cat-link"><i class="ti ti-plane"></i> Move <i class="ti ti-chevron-down chev"></i>
+      <div class="cat-dropdown"><a href="#"><i class="ti ti-backpack"></i>Travel bags</a><a href="#"><i class="ti ti-luggage"></i>Luggage</a><div class="cat-dropdown-divider"></div><a href="https://explorer.octaliving.com" class="cat-dropdown-all">View all Move →</a></div>
+    </div>
+    <div class="cat-link"><i class="ti ti-device-laptop"></i> Work <i class="ti ti-chevron-down chev"></i>
+      <div class="cat-dropdown"><a href="#"><i class="ti ti-device-desktop"></i>Desk setup</a><a href="#"><i class="ti ti-headphones"></i>Audio</a><a href="#"><i class="ti ti-notebook"></i>Stationery</a><div class="cat-dropdown-divider"></div><a href="https://explorer.octaliving.com" class="cat-dropdown-all">View all Work →</a></div>
+    </div>
+    <div class="cat-link"><i class="ti ti-confetti"></i> Play <i class="ti ti-chevron-down chev"></i>
+      <div class="cat-dropdown"><a href="#"><i class="ti ti-device-gamepad"></i>Gaming</a><a href="#"><i class="ti ti-palette"></i>Art & craft</a><a href="#"><i class="ti ti-book"></i>Books</a><div class="cat-dropdown-divider"></div><a href="https://explorer.octaliving.com" class="cat-dropdown-all">View all Play →</a></div>
+    </div>
+  </div>
+  <div class="nav-right-links">
+    <a href="#new-arrivals" class="nav-right-link"><i class="ti ti-sparkles"></i> New in</a>
+    <a href="https://explorer.octaliving.com" class="nav-right-link"><i class="ti ti-layout-grid"></i> Explorer</a>
+    <a href="#featured" class="nav-right-link"><i class="ti ti-tag"></i> Deals</a>
+  </div>
+</div>
+
+<section class="hero-wrap">
+  <article class="hero-main">
+    <svg class="hero-bg" viewBox="0 0 600 340"><circle cx="480" cy="60" r="120" fill="#fff"/><circle cx="560" cy="280" r="80" fill="#fff"/><circle cx="80" cy="320" r="60" fill="#fff"/></svg>
+    <div>
+      <p class="hero-badge"><i class="ti ti-sparkles"></i> Curated weekly picks</p>
+      <h1 class="hero-title">Live better with <span>hand-picked</span> lifestyle finds</h1>
+      <p class="hero-sub">Every product is personally curated and linked directly to verified Shopee sellers — great picks without the endless scrolling.</p>
+      <div class="hero-actions">
+        <a href="#featured" class="btn-primary"><i class="ti ti-arrow-down"></i> Browse picks</a>
+        <a href="https://explorer.octaliving.com" class="btn-ghost"><i class="ti ti-layout-grid"></i> All departments</a>
+      </div>
+    </div>
+  </article>
+  <aside class="hero-side" id="hero-side">
+    <!-- Skeleton while loading -->
+    <div class="side-card" style="min-height:140px;">
+      <div class="skeleton" style="height:16px;width:60%;border-radius:4px;margin-bottom:12px;"></div>
+      <div class="skeleton" style="height:20px;width:80%;border-radius:4px;margin-bottom:8px;"></div>
+      <div class="skeleton" style="height:14px;width:50%;border-radius:4px;margin-bottom:16px;"></div>
+      <div class="skeleton" style="height:28px;width:40%;border-radius:4px;"></div>
+    </div>
+    <div class="side-card" style="min-height:140px;">
+      <div class="skeleton" style="height:16px;width:60%;border-radius:4px;margin-bottom:12px;"></div>
+      <div class="skeleton" style="height:20px;width:80%;border-radius:4px;margin-bottom:8px;"></div>
+      <div class="skeleton" style="height:14px;width:50%;border-radius:4px;margin-bottom:16px;"></div>
+      <div class="skeleton" style="height:28px;width:40%;border-radius:4px;"></div>
+    </div>
+  </aside>
+</section>
+
+<nav class="hero-cats-strip">
+  <a href="#" class="cat-pill active" data-dept="all"><i class="ti ti-layout-grid"></i> All</a>
+  <a href="#" class="cat-pill" data-dept="spaces"><i class="ti ti-home"></i> Spaces</a>
+  <a href="#" class="cat-pill" data-dept="eats"><i class="ti ti-coffee"></i> Eats</a>
+  <a href="#" class="cat-pill" data-dept="style"><i class="ti ti-shirt"></i> Style</a>
+  <a href="#" class="cat-pill" data-dept="well"><i class="ti ti-heart-rate-monitor"></i> Well</a>
+  <a href="#" class="cat-pill" data-dept="move"><i class="ti ti-plane"></i> Move</a>
+  <a href="#" class="cat-pill" data-dept="work"><i class="ti ti-device-laptop"></i> Work</a>
+  <a href="#" class="cat-pill" data-dept="play"><i class="ti ti-confetti"></i> Play</a>
+</nav>
+
+<div class="trust-bar">
+  <div class="trust-item"><i class="ti ti-hand-finger trust-icon"></i><div><div class="trust-title">Hand-curated picks</div><div class="trust-sub">Every product personally selected</div></div></div>
+  <div class="trust-item"><i class="ti ti-brand-shopee trust-icon"></i><div><div class="trust-title">Verified Shopee sellers</div><div class="trust-sub">All links go to trusted stores</div></div></div>
+  <div class="trust-item"><i class="ti ti-refresh trust-icon"></i><div><div class="trust-title">Updated weekly</div><div class="trust-sub">Fresh picks every week</div></div></div>
+  <div class="trust-item"><i class="ti ti-cloud trust-icon"></i><div><div class="trust-title">Live from Firebase</div><div class="trust-sub">Products sync in real time</div></div></div>
+</div>
+
+<!-- FEATURED — Firebase live -->
+<section class="section-wrap" id="featured" style="background:var(--gray50)">
+  <div class="section-header">
+    <div>
+      <p class="section-eyebrow">This week's picks</p>
+      <h2 class="section-title">Featured finds <span class="live-badge"><span class="live-dot"></span> Live</span></h2>
+    </div>
+    <a href="https://explorer.octaliving.com" class="section-view-all">View all <i class="ti ti-arrow-right"></i></a>
+  </div>
+  <div class="filter-row" id="featured-filters">
+    <button class="filter-btn active" data-dept="all">All picks</button>
+    <button class="filter-btn" data-dept="spaces">Spaces</button>
+    <button class="filter-btn" data-dept="eats">Eats</button>
+    <button class="filter-btn" data-dept="style">Style</button>
+    <button class="filter-btn" data-dept="well">Well</button>
+    <button class="filter-btn" data-dept="move">Move</button>
+    <button class="filter-btn" data-dept="work">Work</button>
+    <button class="filter-btn" data-dept="play">Play</button>
+  </div>
+  <div class="products-grid" id="featured-grid">
+    <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton-body"><div class="skeleton skeleton-line" style="width:60%"></div><div class="skeleton skeleton-line" style="width:90%"></div><div class="skeleton skeleton-line" style="width:40%"></div></div></div>
+    <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton-body"><div class="skeleton skeleton-line" style="width:60%"></div><div class="skeleton skeleton-line" style="width:90%"></div><div class="skeleton skeleton-line" style="width:40%"></div></div></div>
+    <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton-body"><div class="skeleton skeleton-line" style="width:60%"></div><div class="skeleton skeleton-line" style="width:90%"></div><div class="skeleton skeleton-line" style="width:40%"></div></div></div>
+    <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton-body"><div class="skeleton skeleton-line" style="width:60%"></div><div class="skeleton skeleton-line" style="width:90%"></div><div class="skeleton skeleton-line" style="width:40%"></div></div></div>
+  </div>
+</section>
+
+<!-- NEW ARRIVALS — Firebase live -->
+<section class="arrivals-bg section-wrap" id="new-arrivals">
+  <div class="section-header">
+    <div>
+      <p class="section-eyebrow">Fresh this week</p>
+      <h2 class="section-title">New arrivals <span class="live-badge"><span class="live-dot"></span> Live</span></h2>
+    </div>
+    <div class="section-header-right">
+      <div class="scroll-btns">
+        <button class="scroll-btn" id="scroll-left"><i class="ti ti-chevron-left"></i></button>
+        <button class="scroll-btn" id="scroll-right"><i class="ti ti-chevron-right"></i></button>
+      </div>
+      <a href="https://explorer.octaliving.com" class="section-view-all">View all <i class="ti ti-arrow-right"></i></a>
+    </div>
+  </div>
+  <div class="arrivals-track" id="arrivals-track"></div>
+</section>
+
+<!-- SHOP BY DEPT — Firebase live -->
+<section class="section-wrap" style="background:var(--gray50)">
+  <div class="section-header">
+    <div>
+      <p class="section-eyebrow">Browse by department</p>
+      <h2 class="section-title">Shop by category</h2>
+    </div>
+    <a href="https://explorer.octaliving.com" class="section-view-all">All departments <i class="ti ti-layout-grid"></i></a>
+  </div>
+  <div id="dept-blocks"></div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter-section" id="newsletter">
+  <div class="nl-bg"><div class="nl-bg-circle nl-bg-circle-1"></div><div class="nl-bg-circle nl-bg-circle-2"></div><div class="nl-bg-dots"></div></div>
+  <div class="nl-inner">
+    <div class="nl-badge"><i class="ti ti-mail"></i> Join the Octa community</div>
+    <h2 class="nl-heading">Get the best picks <span>before</span><br>everyone else does</h2>
+    <p class="nl-sub">Subscribe and be the first to know about new curated picks, flash deals on Shopee, and lifestyle content — straight to your inbox.</p>
+    <div class="nl-perks">
+      <div class="nl-perk"><i class="ti ti-bolt"></i> Early deal alerts</div>
+      <div class="nl-perk-divider"></div>
+      <div class="nl-perk"><i class="ti ti-sparkles"></i> New arrivals first</div>
+      <div class="nl-perk-divider"></div>
+      <div class="nl-perk"><i class="ti ti-heart"></i> Curated picks weekly</div>
+      <div class="nl-perk-divider"></div>
+      <div class="nl-perk"><i class="ti ti-x"></i> Unsubscribe anytime</div>
+    </div>
+    <div id="nl-form-wrap">
+      <div class="nl-form">
+        <div class="nl-input-wrap"><i class="ti ti-mail nl-input-icon"></i><input class="nl-input" id="nl-email" type="email" placeholder="Enter your email address" /></div>
+        <button class="nl-submit" id="nl-submit-btn"><i class="ti ti-send"></i> Subscribe</button>
+      </div>
+      <p class="nl-privacy">No spam, ever. <a href="#">Privacy Policy</a></p>
+    </div>
+    <div class="nl-success" id="nl-success">
+      <div class="nl-success-icon"><i class="ti ti-circle-check"></i></div>
+      <div class="nl-success-title">You're in! Welcome.</div>
+      <div class="nl-success-sub">Watch your inbox for this week's picks.</div>
+    </div>
+    <div class="nl-social-proof">
+      <div class="nl-avatars">
+        <div class="nl-avatar" style="background:#3b5bdb">M</div>
+        <div class="nl-avatar" style="background:#f08c00">J</div>
+        <div class="nl-avatar" style="background:#2f9e44">A</div>
+        <div class="nl-avatar" style="background:#9c36b5">K</div>
+        <div class="nl-avatar" style="background:#e8590c">R</div>
+      </div>
+      <p class="nl-proof-text">Join <strong>42,000+</strong> lifestyle enthusiasts across the Philippines</p>
+    </div>
+  </div>
+</section>
+
+<div class="disclosure-bar"><i class="ti ti-info-circle"></i> Octa Living participates in the Shopee Affiliate Program. Some links are affiliate links — we earn a small commission when you purchase through them, at no extra cost to you.</div>
+
+<footer class="footer-main">
+  <div class="footer-grid">
+    <div>
+      <a href="/" class="footer-logo"><svg width="26" height="26" viewBox="0 0 30 30" fill="none"><path d="M15 2 C9 2 4.5 6 3.5 11.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/><path d="M3.5 11.5 C2.5 14 2.5 16 3.5 18.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/><path d="M3.5 18.5 C4.5 24 9 28 15 28" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/><path d="M15 28 C21 28 25.5 24 26.5 18.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/><path d="M26.5 18.5 C27.5 16 27.5 14 26.5 11.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/><path d="M26.5 11.5 C25.5 6 21 2 15 2" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/></svg><span class="footer-logo-name">Octa<span>Living</span></span></a>
+      <p class="footer-tagline">Your curated lifestyle destination. Hand-picked products across 7 departments — all linked to verified Shopee sellers in the Philippines.</p>
+      <div class="footer-socials">
+        <a href="#" class="social-btn"><i class="ti ti-brand-facebook"></i></a>
+        <a href="#" class="social-btn"><i class="ti ti-brand-instagram"></i></a>
+        <a href="#" class="social-btn"><i class="ti ti-brand-tiktok"></i></a>
+        <a href="#" class="social-btn"><i class="ti ti-brand-youtube"></i></a>
+      </div>
+      <div class="footer-contact">
+        <a href="mailto:hello@octaliving.com" class="footer-contact-item"><i class="ti ti-mail"></i> hello@octaliving.com</a>
+        <address class="footer-contact-item"><i class="ti ti-map-pin"></i> Philippines</address>
+      </div>
+    </div>
+    <nav><div class="footer-col-title">Shop</div><ul class="footer-links"><li><a href="#"><i class="ti ti-home"></i> Spaces</a></li><li><a href="#"><i class="ti ti-coffee"></i> Eats</a></li><li><a href="#"><i class="ti ti-shirt"></i> Style</a></li><li><a href="#"><i class="ti ti-heart-rate-monitor"></i> Well</a></li><li><a href="#"><i class="ti ti-plane"></i> Move</a></li><li><a href="#"><i class="ti ti-device-laptop"></i> Work</a></li><li><a href="#"><i class="ti ti-confetti"></i> Play</a></li><li><a href="https://explorer.octaliving.com"><i class="ti ti-layout-grid"></i> Explorer <span class="link-badge">Full</span></a></li></ul></nav>
+    <nav><div class="footer-col-title">Discover</div><ul class="footer-links"><li><a href="#new-arrivals">New arrivals</a></li><li><a href="#featured">Weekly deals</a></li><li><a href="https://explorer.octaliving.com">Department explorer</a></li><li><a href="https://list.octaliving.com">Product list</a></li><li><a href="#newsletter">Newsletter</a></li><li><a href="#">About Octa Living</a></li></ul></nav>
+    <nav><div class="footer-col-title">Info</div><ul class="footer-links"><li><a href="#">Affiliate disclosure</a></li><li><a href="#">Privacy policy</a></li><li><a href="#">Terms of use</a></li><li><a href="#">Contact us</a></li></ul></nav>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">&copy; 2026 <a href="/">Octa Living</a>. All rights reserved. Made with love in the Philippines.</p>
+    <div class="footer-legal"><a href="#">Privacy Policy</a><a href="#">Terms of Use</a><a href="#">Affiliate Disclosure</a></div>
+    <div class="footer-locale"><i class="ti ti-map-pin"></i> Philippines · English · ₱ PHP</div>
+  </div>
+</footer>
+
+<a href="#" class="back-top" id="back-top"><i class="ti ti-arrow-up"></i></a>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyBCshoaZtrhuG1GNmD1MoArfW7wPvTIEto",
+  authDomain: "octa-living.firebaseapp.com",
+  projectId: "octa-living",
+  storageBucket: "octa-living.firebasestorage.app",
+  messagingSenderId: "728259117086",
+  appId: "1:728259117086:web:a0b48da63aa04c41a5ae0f"
+});
+const db = getFirestore(app);
+
+const DEPTS = {
+  spaces: { name:'Spaces', icon:'ti-home', num:'01', tagline:'Home · Decor · Condo living' },
+  eats:   { name:'Eats',   icon:'ti-coffee', num:'02', tagline:'Coffee · Food · Kitchen lifestyle' },
+  style:  { name:'Style',  icon:'ti-shirt', num:'03', tagline:'Fashion · Accessories · Footwear' },
+  well:   { name:'Well',   icon:'ti-heart-rate-monitor', num:'04', tagline:'Health · Fitness · Self-care' },
+  move:   { name:'Move',   icon:'ti-plane', num:'05', tagline:'Travel · Bags · Mobility' },
+  work:   { name:'Work',   icon:'ti-device-laptop', num:'06', tagline:'Productivity · Desk setup · Audio' },
+  play:   { name:'Play',   icon:'ti-confetti', num:'07', tagline:'Hobbies · Leisure · Lifestyle extras' },
+};
+
+// Badge style helper
+function badgeStyle(label) {
+  const l = (label||'').toLowerCase();
+  if (l.includes('deal') || l.includes('sale') || l.includes('off')) return 'badge-sale';
+  if (l.includes('popular') || l.includes('best') || l.includes('hot')) return 'badge-hot';
+  return 'badge-new';
+}
+
+function renderHero(products) {
+  const heroProducts = products.filter(p => p.hero === true);
+  const show = heroProducts.slice(0, 2);
+  const side = document.getElementById('hero-side');
+
+  if (!show.length) {
+    // Fallback to 2 most recent products if no hero-flagged ones
+    const fallback = products.slice(0, 2);
+    if (!fallback.length) {
+      side.innerHTML = `
+        <article class="side-card"><i class="ti ti-home side-card-img"></i>
+          <div><span class="side-card-badge badge-new">New pick</span><h2 class="side-card-title">Linen Throw Pillow</h2><p class="side-card-sub">Spaces · Home decor</p><div class="side-card-price"><span class="price-current">₱1,290</span></div></div>
+          <a href="#featured" class="side-card-cta">Browse picks <i class="ti ti-arrow-right"></i></a>
+        </article>
+        <article class="side-card"><i class="ti ti-coffee side-card-img"></i>
+          <div><span class="side-card-badge badge-sale">Great deal</span><h2 class="side-card-title">Pour-Over Coffee Set</h2><p class="side-card-sub">Eats · Coffee & tea</p><div class="side-card-price"><span class="price-current">₱1,715</span><span class="price-original">₱2,450</span><span class="price-off">−30%</span></div></div>
+          <a href="#featured" class="side-card-cta">Browse picks <i class="ti ti-arrow-right"></i></a>
+        </article>`;
+      return;
+    }
+    show.push(...fallback);
+  }
+
+  side.innerHTML = show.map(p => {
+    const did = p.pKey ? p.pKey.split('::')[0] : '';
+    const sub = p.pKey ? p.pKey.split('::')[1] : '';
+    const cfg = DEPTS[did];
+    const badgeLabel = p.heroBadge || 'New pick';
+    const bStyle = badgeStyle(badgeLabel);
+    const hasDiscount = p.heroOrigPrice && p.price && parseFloat(p.heroOrigPrice) > parseFloat(p.price);
+    const discPct = hasDiscount ? Math.round((1 - parseFloat(p.price)/parseFloat(p.heroOrigPrice))*100) : 0;
+    return `<article class="side-card">
+      <i class="ti ${cfg?.icon || 'ti-package'} side-card-img"></i>
+      <div>
+        <span class="side-card-badge ${bStyle}"><i class="ti ti-sparkles"></i> ${esc(badgeLabel)}</span>
+        <h2 class="side-card-title">${esc(p.name)}</h2>
+        <p class="side-card-sub">${esc(cfg?.name || did)}${sub?' · '+esc(sub):''}</p>
+        <div class="side-card-price">
+          ${p.price?`<span class="price-current">₱${esc(p.price)}</span>`:''}
+          ${hasDiscount?`<span class="price-original">₱${esc(p.heroOrigPrice)}</span><span class="price-off">−${discPct}%</span>`:''}
+        </div>
+      </div>
+      <a href="${esc(p.link)}" class="side-card-cta" target="_blank" rel="noopener sponsored">Shop on Shopee <i class="ti ti-arrow-right"></i></a>
+    </article>`;
+  }).join('');
+}
+const DEPT_ORDER = ['spaces','eats','style','well','move','work','play'];
+
+let allProducts = [];
+let featuredFilter = 'all';
+
+function esc(s) { return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : ''; }
+function deptId(p) { return p.pKey ? p.pKey.split('::')[0] : ''; }
+function subName(p) { return p.pKey ? p.pKey.split('::')[1] : ''; }
+function icon(did) { return DEPTS[did]?.icon || 'ti-package'; }
+function dname(did) { return DEPTS[did]?.name || did; }
+
+function imgOrIcon(p, did, cls) {
+  return p.image
+    ? `<img src="${esc(p.image)}" alt="${esc(p.name)}" onerror="this.parentElement.innerHTML='<i class=\\'ti ${icon(did)} ${cls}\\'></i>'">`
+    : `<i class="ti ${icon(did)} ${cls}"></i>`;
+}
+
+function renderFeatured() {
+  const grid = document.getElementById('featured-grid');
+  const list = featuredFilter === 'all' ? allProducts : allProducts.filter(p => deptId(p) === featuredFilter);
+  const show = list.slice(0, 8);
+  if (!show.length) {
+    grid.innerHTML = `<div class="empty-state"><i class="ti ti-shopping-bag"></i><p>No products yet in this department.<br>Add some via the <a href="https://tools.octaliving.com">link generator</a>.</p></div>`;
+    return;
+  }
+  grid.innerHTML = show.map(p => {
+    const did = deptId(p), sub = subName(p);
+    return `<article class="product-card">
+      <div class="card-img-wrap">${imgOrIcon(p,did,'card-img-icon')}<div class="card-badges"><span class="badge badge-newp">New pick</span></div><button class="card-wish"><i class="ti ti-heart"></i></button></div>
+      <div class="card-body">
+        <span class="card-cat">${esc(dname(did))}${sub?' · '+esc(sub):''}</span>
+        <h3 class="card-name">${esc(p.name)}</h3>
+        <div class="card-price-row">${p.price?`<span class="card-price">₱${esc(p.price)}</span>`:'<span style="font-size:12px;color:var(--gray400)">See Shopee for price</span>'}</div>
+      </div>
+      <a href="${esc(p.link)}" class="card-shop-btn" target="_blank" rel="noopener sponsored"><i class="ti ti-external-link"></i> Shop on <span class="shopee-logo">Shopee</span></a>
+    </article>`;
+  }).join('');
+  bindWish(grid);
+}
+
+function renderArrivals() {
+  const track = document.getElementById('arrivals-track');
+  const recent = [...allProducts].sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0)).slice(0,10);
+  if (!recent.length) {
+    track.innerHTML = `<div style="padding:2rem;color:var(--gray400);font-size:13px">No products yet — <a href="https://tools.octaliving.com" style="color:var(--gold)">add your first pick</a>.</div>`;
+    return;
+  }
+  track.innerHTML = recent.map(p => {
+    const did = deptId(p), sub = subName(p);
+    return `<article class="arrival-card">
+      <div class="a-img">${imgOrIcon(p,did,'card-img-icon')}<span class="new-badge">New</span><button class="card-wish"><i class="ti ti-heart"></i></button></div>
+      <div class="a-body">
+        <span class="a-cat">${esc(dname(did))}${sub?' · '+esc(sub):''}</span>
+        <h3 class="a-name">${esc(p.name)}</h3>
+        ${p.price?`<span class="a-price">₱${esc(p.price)}</span>`:''}
+      </div>
+      <a href="${esc(p.link)}" class="mini-shop-btn" target="_blank" rel="noopener sponsored"><i class="ti ti-external-link"></i> Shop on Shopee</a>
+    </article>`;
+  }).join('');
+  bindWish(track);
+}
+
+function renderDepts() {
+  const container = document.getElementById('dept-blocks');
+  container.innerHTML = DEPT_ORDER.map((did, i) => {
+    const cfg = DEPTS[did];
+    const products = allProducts.filter(p => deptId(p) === did);
+    const show = products.slice(0, 5);
+    return `<div class="dept-block dept-${did}${i===0?' open':''}">
+      <div class="dept-header" tabindex="0">
+        <div class="dept-header-left">
+          <div class="dept-icon-wrap"><i class="ti ${cfg.icon}"></i></div>
+          <div><div class="dept-label">Department ${cfg.num}</div><div class="dept-name">${cfg.name}</div><div class="dept-count">${cfg.tagline}</div></div>
+        </div>
+        <div class="dept-header-right">
+          ${products.length?`<span class="dept-product-count">${products.length} product${products.length!==1?'s':''}</span>`:''}
+          <a href="https://explorer.octaliving.com" class="dept-view-all" onclick="event.stopPropagation()">View all <i class="ti ti-arrow-right"></i></a>
+          <i class="ti ti-chevron-down dept-chevron"></i>
+        </div>
+      </div>
+      <div class="dept-body">
+        <div class="mini-grid">
+          ${show.length
+            ? show.map(p=>`<article class="mini-card">
+                <div class="mini-img">${imgOrIcon(p,did,'mini-icon')}<button class="mini-wish"><i class="ti ti-heart"></i></button></div>
+                <div class="mini-body"><div class="mini-name">${esc(p.name)}</div>${p.price?`<div class="mini-price">₱${esc(p.price)}</div>`:''}</div>
+                <a href="${esc(p.link)}" class="mini-card-shop" target="_blank" rel="noopener sponsored"><i class="ti ti-external-link"></i> Shop on Shopee</a>
+              </article>`).join('')
+            : `<div style="grid-column:1/-1;padding:2rem;text-align:center;color:var(--gray400);font-size:13px">No products yet — <a href="https://tools.octaliving.com" style="color:var(--gold)">add your first pick</a>.</div>`}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  container.querySelectorAll('.dept-header').forEach(h => {
+    h.addEventListener('click', e => {
+      if (e.target.closest('.dept-view-all')) return;
+      const block = h.closest('.dept-block');
+      const open = block.classList.toggle('open');
+      h.setAttribute('aria-expanded', open);
+    });
+    h.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); h.click(); } });
+  });
+  bindWish(container);
+}
+
+function bindWish(el) {
+  el.querySelectorAll('.card-wish,.mini-wish').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const icon = btn.querySelector('i');
+      const on = icon.classList.contains('ti-heart-filled');
+      icon.className = on ? 'ti ti-heart' : 'ti ti-heart-filled';
+      btn.style.color = on ? '' : '#e53935';
+      btn.style.borderColor = on ? '' : '#e53935';
+    });
+  });
+}
+
+function renderAll() { renderHero(allProducts); renderFeatured(); renderArrivals(); renderDepts(); }
+
+// Live sync
+onSnapshot(collection(db, 'products'), snap => {
+  const seen = new Set();
+  allProducts = [];
+  snap.forEach(doc => {
+    const d = doc.data();
+    if (d.id && !seen.has(d.id)) { seen.add(d.id); allProducts.push(d); }
+  });
+  allProducts.sort((a,b) => (b.updatedAt||0)-(a.updatedAt||0));
+  renderAll();
+}, err => {
+  console.error(err);
+  document.getElementById('featured-grid').innerHTML = `<div class="empty-state"><i class="ti ti-wifi-off"></i><p>Could not load products.</p></div>`;
+});
+
+// Featured filter
+document.getElementById('featured-filters').addEventListener('click', e => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+  document.querySelectorAll('#featured-filters .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  featuredFilter = btn.dataset.dept;
+  renderFeatured();
+});
+
+// Cat pills
+document.querySelectorAll('.cat-pill').forEach(pill => {
+  pill.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    featuredFilter = pill.dataset.dept;
+    document.querySelectorAll('#featured-filters .filter-btn').forEach(b => b.classList.toggle('active', b.dataset.dept === featuredFilter));
+    renderFeatured();
+    document.getElementById('featured').scrollIntoView({ behavior:'smooth' });
+  });
+});
+
+// Scroll
+const track = document.getElementById('arrivals-track');
+document.getElementById('scroll-left').addEventListener('click', () => track.scrollBy({ left:-480, behavior:'smooth' }));
+document.getElementById('scroll-right').addEventListener('click', () => track.scrollBy({ left:480, behavior:'smooth' }));
+
+// Newsletter
+const emailEl = document.getElementById('nl-email');
+document.getElementById('nl-submit-btn').addEventListener('click', () => {
+  const v = emailEl.value.trim();
+  if (!v || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { emailEl.style.borderColor='#e53935'; emailEl.focus(); return; }
+  document.getElementById('nl-form-wrap').style.display = 'none';
+  document.getElementById('nl-success').style.display = 'flex';
+});
+emailEl.addEventListener('input', () => emailEl.style.borderColor = '');
+emailEl.addEventListener('keydown', e => { if (e.key==='Enter') document.getElementById('nl-submit-btn').click(); });
+
+// Back to top
+const bt = document.getElementById('back-top');
+window.addEventListener('scroll', () => bt.classList.toggle('visible', scrollY > 300));
+bt.addEventListener('click', e => { e.preventDefault(); scrollTo({ top:0, behavior:'smooth' }); });
+</script>
+</body>
+</html>
