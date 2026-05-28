@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Octa Living — Shopee Affiliate Product List</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --white: #fff; --gray50: #f7f7f7; --gray100: #f0f0f0; --gray200: #e4e4e4;
+      --gray400: #9a9a9a; --gray700: #3a3a3a; --black: #111; --gold: #c9a96e; --font: 'DM Sans', sans-serif;
+    }
+    body { font-family: var(--font); background: var(--gray50); color: var(--black); font-size: 13px; }
+    .page { max-width: 1300px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .header-top { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .brand-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .brand-name { font-size: 18px; font-weight: 600; color: var(--black); letter-spacing: -0.02em; }
+    .brand-name span { color: var(--gold); }
+    h1 { font-size: 22px; font-weight: 600; color: var(--black); margin-bottom: 4px; }
+    .subtitle { font-size: 13px; color: var(--gray400); margin-bottom: 1.25rem; }
+    .nav-links { display: flex; gap: 12px; margin-bottom: 1.25rem; }
+    .nav-link { font-size: 12px; color: var(--gray700); text-decoration: none; display: flex; align-items: center; gap: 5px; padding: 5px 12px; border: 1px solid var(--gray200); border-radius: 6px; background: var(--white); transition: all .15s; }
+    .nav-link:hover { background: var(--black); color: var(--white); border-color: var(--black); }
+    .notice { background: #fff8e1; border: 1px solid #ffe082; border-radius: 10px; padding: 14px 18px; font-size: 12px; color: #5d4037; margin-bottom: 1.5rem; line-height: 1.6; }
+    .notice b { color: #bf360c; }
+    .legend { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--gray700); }
+    .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.25rem; align-items: center; }
+    .filter-btn { background: var(--white); border: 1px solid var(--gray200); border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 500; color: var(--gray700); cursor: pointer; font-family: var(--font); transition: all .15s; white-space: nowrap; }
+    .filter-btn:hover, .filter-btn.active { background: var(--black); color: var(--white); border-color: var(--black); }
+    .filter-search { flex: 1; min-width: 200px; padding: 7px 12px; border-radius: 20px; border: 1px solid var(--gray200); background: var(--white); font-family: var(--font); font-size: 12px; outline: none; }
+    .filter-search:focus { border-color: var(--black); }
+    .table-wrap { background: var(--white); border: 1px solid var(--gray200); border-radius: 12px; overflow: hidden; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 900px; }
+    thead { background: var(--black); }
+    th { padding: 12px 14px; text-align: left; font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--white); white-space: nowrap; }
+    tbody tr { border-bottom: 1px solid var(--gray100); transition: background .1s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--gray50); }
+    tbody tr.hidden { display: none; }
+    td { padding: 10px 14px; vertical-align: middle; }
+    .td-num { color: var(--gray400); font-size: 11px; }
+    .dept-tag { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 4px; }
+    .td-product { font-weight: 500; color: var(--black); }
+    .td-type { font-size: 11px; color: var(--gray700); }
+    .td-sub { font-size: 11px; color: var(--gray400); }
+    .td-link a { display: inline-flex; align-items: center; gap: 5px; color: #1a73e8; font-size: 11px; text-decoration: none; background: #e8f0fe; padding: 4px 9px; border-radius: 6px; white-space: nowrap; }
+    .td-link a:hover { background: #1a73e8; color: #fff; }
+    .comm-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
+    .comm-high { background: #e8f5e9; color: #1b5e20; }
+    .comm-mid  { background: #fff8e1; color: #e65100; }
+    .comm-base { background: #f1f3f5; color: #495057; }
+    .count-bar { font-size: 12px; color: var(--gray400); margin-top: 1rem; }
+    .count-bar b { color: var(--black); }
+    @media (max-width: 600px) { .page { padding: 1rem; } h1 { font-size: 18px; } }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header-top">
+    <a href="https://octaliving.com" class="brand-logo">
+      <svg width="26" height="26" viewBox="0 0 30 30" fill="none">
+        <path d="M15 2 C9 2 4.5 6 3.5 11.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M3.5 11.5 C2.5 14 2.5 16 3.5 18.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M3.5 18.5 C4.5 24 9 28 15 28" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M15 28 C21 28 25.5 24 26.5 18.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M26.5 18.5 C27.5 16 27.5 14 26.5 11.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M26.5 11.5 C25.5 6 21 2 15 2" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <span class="brand-name">Octa<span>Living</span></span>
+    </a>
+  </div>
+
+  <h1>Shopee Affiliate Product List</h1>
+  <p class="subtitle">7 departments · 154 products · Commission rate reference · Shopee PH search links</p>
+
+  <div class="nav-links">
+    <a href="https://octaliving.com" class="nav-link"><i class="ti ti-home"></i> Webstore</a>
+    <a href="https://explorer.octaliving.com" class="nav-link"><i class="ti ti-layout-grid"></i> Explorer</a>
+    <a href="https://tools.octaliving.com" class="nav-link"><i class="ti ti-link"></i> Link generator</a>
+  </div>
+
+  <div class="notice">
+    <b>⚠️ Important:</b> Commission rates shown are <b>base rates by category</b> — actual rates vary per seller. Many sellers add <b>Commission XTRA</b> (up to +50% on top of base), so always check the product listing in your Shopee Affiliate dashboard. Rates sourced from Shopee PH affiliate documentation (2025–2026) and may change. <b>🌟 Star = Commission XTRA commonly available</b> for this product type.
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="dot" style="background:#2e7d32"></div> High commission (7–10%+)</div>
+    <div class="legend-item"><div class="dot" style="background:#e65100"></div> Mid commission (3–6%)</div>
+    <div class="legend-item"><div class="dot" style="background:#495057"></div> Base commission (2.5–4%)</div>
+    <div class="legend-item"><div class="dot" style="background:#880e4f"></div> 🌟 Commission XTRA commonly available</div>
+  </div>
+
+  <div class="filter-bar">
+    <input class="filter-search" id="search" placeholder="🔍  Search products, subcategory, or type..." />
+    <button class="filter-btn active" data-dept="all">All (154)</button>
+    <button class="filter-btn" data-dept="spaces">🏠 Spaces</button>
+    <button class="filter-btn" data-dept="eats">☕ Eats</button>
+    <button class="filter-btn" data-dept="style">👕 Style</button>
+    <button class="filter-btn" data-dept="well">💚 Well</button>
+    <button class="filter-btn" data-dept="move">✈️ Move</button>
+    <button class="filter-btn" data-dept="work">💻 Work</button>
+    <button class="filter-btn" data-dept="play">🎮 Play</button>
+  </div>
+
+  <div class="table-wrap">
+    <table id="product-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Department</th>
+          <th>Product</th>
+          <th>Subcategory</th>
+          <th>Product Type</th>
+          <th>Commission</th>
+          <th>Shopee Search</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+  <div class="count-bar" id="count-bar"></div>
+</div>
+
+<script>
+const products = [
+  // ── SPACES (22) ──────────────────────────────────────────────────────
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'3D Foam Brick Wallpaper',sub:'Decor & accents',type:'Wall art & frames',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/3d+brick+wallpaper'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'LED Fairy String Lights',sub:'Lighting',type:'LED strips & ambient',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/fairy+string+lights'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'Throw Pillow with Insert',sub:'Living room',type:'Cushions & throws',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/throw+pillow'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'Bedside Table / Nightstand',sub:'Bedroom',type:'Bedside tables',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/bedside+table'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'Aesthetic Wall Clock',sub:'Decor & accents',type:'Wall clocks',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/aesthetic+wall+clock'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'Scented Soy Candle',sub:'Decor & accents',type:'Scented candles',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/scented+candle+philippines'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'Macramé Wall Hanging',sub:'Decor & accents',type:'Wall art & frames',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/macrame+wall+hanging'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'Storage Ottoman / Pouf',sub:'Living room',type:'Sofas & couches',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/storage+ottoman'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'Artificial Indoor Plant',sub:'Plants & outdoors',type:'Artificial plants',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/artificial+indoor+plant'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'Ceramic Plant Pot',sub:'Plants & outdoors',type:'Plant pots & planters',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/ceramic+plant+pot'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'Linen Bed Sheet Set',sub:'Bedroom',type:'Bed sheets & duvet covers',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/linen+bed+sheet+set'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'Blackout Curtains',sub:'Bedroom',type:'Blackout curtains',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/blackout+curtains+philippines'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'Arc Floor Lamp',sub:'Lighting',type:'Floor lamps',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/arc+floor+lamp'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'Floating Wall Shelves',sub:'Living room',type:'Shelves & storage',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/floating+wall+shelves'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'Bamboo Ladder Shelf',sub:'Living room',type:'Shelves & storage',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/bamboo+ladder+shelf'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'Photo Frame Set',sub:'Decor & accents',type:'Picture frames',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/photo+frame+set'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'Bathroom Organizer Set',sub:'Bathroom',type:'Bathroom organizers',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/bathroom+organizer'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'Aesthetic Doormat',sub:'Decor & accents',type:'Decorative trays',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/aesthetic+doormat'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'Rattan Storage Basket',sub:'Living room',type:'Shelves & storage',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/rattan+storage+basket'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'Aroma Diffuser',sub:'Decor & accents',type:'Scented candles',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/aroma+diffuser'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'LED Mushroom Night Light',sub:'Lighting',type:'LED strips & ambient',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/mushroom+night+light'},
+  {dept:'spaces',dL:'🏠 Spaces',dC:'#3b5bdb',dB:'#eef2ff',product:'Bedside Lamp',sub:'Lighting',type:'Table lamps',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/bedside+lamp'},
+  // ── EATS (22) ──────────────────────────────────────────────────────
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Pour-Over Coffee Set',sub:'Coffee & tea',type:'Pour-over sets',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/pour+over+coffee+set'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Gooseneck Electric Kettle',sub:'Small appliances',type:'Electric kettles',comm:'3–5%',ct:'mid',xtra:true,link:'https://shopee.ph/list/gooseneck+electric+kettle'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Insulated Tumbler / Thermos',sub:'Drinkware',type:'Tumblers & bottles',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/insulated+tumbler'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Ceramic Mug Set',sub:'Drinkware',type:'Mugs & cups',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/ceramic+mug+set'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Air Fryer',sub:'Small appliances',type:'Air fryers',comm:'3–5%',ct:'mid',xtra:false,link:'https://shopee.ph/list/air+fryer+philippines'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Rice Cooker',sub:'Small appliances',type:'Rice cookers',comm:'3–5%',ct:'mid',xtra:false,link:'https://shopee.ph/list/rice+cooker+philippines'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Wooden Cutting Board',sub:'Kitchen tools',type:'Cutting boards',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/wooden+cutting+board'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Chef Knife Set',sub:'Kitchen tools',type:'Chef knives & sets',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/chef+knife+set'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'French Press Coffee Maker',sub:'Coffee & tea',type:'French press & Moka pots',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/french+press+coffee'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Milk Frother',sub:'Coffee & tea',type:'Milk frothers',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/milk+frother'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Glass Water Carafe',sub:'Drinkware',type:'Water carafes',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/glass+water+carafe'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Portable Blender / Juicer',sub:'Small appliances',type:'Mini blenders',comm:'3–5%',ct:'mid',xtra:true,link:'https://shopee.ph/list/portable+blender'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Non-stick Fry Pan',sub:'Cookware',type:'Pots & pans',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/non+stick+pan+philippines'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Bento Lunch Box',sub:'Drinkware',type:'Tumblers & bottles',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/bento+lunch+box'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Silicone Kitchen Utensil Set',sub:'Kitchen tools',type:'Spatulas & utensils',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/silicone+kitchen+utensil+set'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Digital Kitchen Scale',sub:'Kitchen tools',type:'Kitchen scales',comm:'3–5%',ct:'mid',xtra:false,link:'https://shopee.ph/list/digital+kitchen+scale'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Cold Brew Coffee Bottle',sub:'Coffee & tea',type:'Specialty drinkware',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/cold+brew+coffee+bottle'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Drip Coffee Bag (sachets)',sub:'Pantry & snacks',type:'Artisan coffee & tea',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/drip+coffee+bag'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Matcha Whisk Set',sub:'Coffee & tea',type:'Tea leaves & sets',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/matcha+whisk+set'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Airfryer Accessories Set',sub:'Small appliances',type:'Air fryers',comm:'3–5%',ct:'mid',xtra:false,link:'https://shopee.ph/list/airfryer+accessories'},
+  {dept:'eats',dL:'☕ Eats',dC:'#e67700',dB:'#fff9db',product:'Wooden Serving Board',sub:'Kitchen tools',type:'Cutting boards',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/wooden+serving+board'},
+  // ── STYLE (22) ──────────────────────────────────────────────────────
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Oversized T-Shirt',sub:"Men's",type:'Basic & graphic tees',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/oversized+tshirt'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Linen Pants',sub:"Men's",type:'Linen & chino trousers',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/linen+pants+philippines'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Canvas Tote Bag',sub:'Accessories',type:'Bags & tote bags',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/canvas+tote+bag'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Mini Crossbody Bag',sub:'Accessories',type:'Bags & tote bags',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/mini+crossbody+bag'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Canvas Slip-On Shoes',sub:'Footwear',type:'Slip-ons & mules',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/slip+on+canvas+shoes'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Midi Dress',sub:"Women's",type:'Dresses & jumpsuits',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/midi+dress+philippines'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Jogger Pants',sub:'Teens',type:'Cargo pants & joggers',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/jogger+pants+philippines'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Bucket Hat',sub:'Accessories',type:'Caps & hats',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/bucket+hat+philippines'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Sling Bag',sub:'Accessories',type:'Backpacks & sling bags',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/sling+bag+philippines'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Sunglasses UV400',sub:'Accessories',type:'Sunglasses',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/uv400+sunglasses'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'High-Waist Leggings',sub:'Activewear',type:'Leggings & tights',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/high+waist+leggings'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Sports Bra',sub:'Activewear',type:'Sports bras & crop tops',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/sports+bra+philippines'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Baby Romper / Onesie',sub:'Babies',type:'Onesies & bodysuits',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/baby+romper+philippines'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'School Uniform Set (Kids)',sub:'Children',type:'School uniforms',comm:'7–10%',ct:'high',xtra:false,link:'https://shopee.ph/list/school+uniform+philippines'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Maternity Dress',sub:'Maternity',type:'Maternity dresses',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/maternity+dress+philippines'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Slim Fit Polo Shirt (Men)',sub:"Men's",type:'Polo & button-down shirts',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/slim+fit+polo+shirt'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Minimalist Leather Watch',sub:'Accessories',type:'Watches',comm:'5–7%',ct:'mid',xtra:true,link:'https://shopee.ph/list/minimalist+leather+watch'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Slim Card Holder / Wallet',sub:'Accessories',type:'Wallets & cardholders',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/slim+card+holder+wallet'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Denim Shorts',sub:"Women's",type:'Denim jeans',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/denim+shorts+philippines'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Chunky Sneakers',sub:'Footwear',type:'Sneakers & rubber shoes',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/chunky+sneakers+philippines'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Nursing Bra',sub:'Maternity',type:'Nursing bras & underwear',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/nursing+bra+philippines'},
+  {dept:'style',dL:'👕 Style',dC:'#9c36b5',dB:'#f8f0fc',product:'Swaddle Blanket',sub:'Babies',type:'Swaddle blankets',comm:'7–10%',ct:'high',xtra:false,link:'https://shopee.ph/list/swaddle+blanket'},
+  // ── WELL (22) ──────────────────────────────────────────────────────
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Yoga Mat (Non-slip)',sub:'Fitness',type:'Yoga mats',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/yoga+mat+non+slip'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Resistance Band Set',sub:'Fitness',type:'Resistance bands',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/resistance+band+set'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Korean Skincare Set',sub:'Skincare',type:'Moisturizers & serums',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/korean+skincare+set'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Sunscreen SPF 50',sub:'Skincare',type:'Sunscreen SPF',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/sunscreen+spf+50+philippines'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Collagen Supplement',sub:'Supplements',type:'Collagen & protein',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/collagen+supplement+philippines'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Electric Facial Massager',sub:'Skincare',type:'Skincare tools',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/electric+facial+massager'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Sleep Eye Mask',sub:'Sleep & recovery',type:'Sleep masks',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/sleep+eye+mask'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Foam Roller',sub:'Fitness',type:'Foam rollers',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/foam+roller+exercise'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Adjustable Dumbbell Set',sub:'Fitness',type:'Dumbbells & weights',comm:'3–5%',ct:'mid',xtra:false,link:'https://shopee.ph/list/adjustable+dumbbell+set'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Vitamin C Serum',sub:'Skincare',type:'Moisturizers & serums',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/vitamin+c+serum+philippines'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Niacinamide Serum',sub:'Skincare',type:'Moisturizers & serums',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/niacinamide+serum+philippines'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Facial Sheet Mask',sub:'Skincare',type:'Face masks & patches',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/facial+sheet+mask+philippines'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Electric Scalp Massager',sub:'Hair care',type:'Hair tools',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/scalp+massager+electric'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Gua Sha + Jade Roller Set',sub:'Skincare',type:'Skincare tools',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/gua+sha+jade+roller'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Multivitamins (Vit C + Zinc)',sub:'Supplements',type:'Vitamins & minerals',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/multivitamins+philippines'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Jump Rope / Speed Rope',sub:'Fitness',type:'Jump ropes',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/jump+rope+speed'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Acne / Pimple Patch',sub:'Skincare',type:'Face masks & patches',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/pimple+patch+philippines'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Bath & Body Scrub Set',sub:'Body care',type:'Shower gels & scrubs',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/body+scrub+set+philippines'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Hair Vitamin / Serum',sub:'Hair care',type:'Hair oils & serums',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/hair+serum+vitamin+philippines'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Weighted Sleep Blanket',sub:'Sleep & recovery',type:'Weighted blankets',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/weighted+blanket+philippines'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Essential Oil Diffuser',sub:'Mental wellness',type:'Aromatherapy & diffusers',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/essential+oil+diffuser'},
+  {dept:'well',dL:'💚 Well',dC:'#2f9e44',dB:'#ebfbee',product:'Probiotics Supplement',sub:'Supplements',type:'Probiotics',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/probiotics+supplement+philippines'},
+  // ── MOVE (22) ──────────────────────────────────────────────────────
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Hardshell Carry-On Luggage',sub:'Luggage',type:'Carry-on luggage',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/hardshell+carry+on+luggage'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Packing Cubes Set',sub:'Luggage',type:'Packing cubes',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/packing+cubes+set'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Travel Neck Pillow',sub:'Travel accessories',type:'Travel pillows',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/travel+neck+pillow'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Passport Holder / Organizer',sub:'Travel accessories',type:'Passport holders',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/passport+holder+organizer'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Anti-Theft Backpack',sub:'Travel bags',type:'Backpacks',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/anti+theft+backpack'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Universal Travel Adapter',sub:'Travel accessories',type:'Power adapters',comm:'3–5%',ct:'mid',xtra:false,link:'https://shopee.ph/list/universal+travel+adapter'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Power Bank 20000mAh',sub:'Gadgets on the go',type:'Portable chargers',comm:'2.5–4%',ct:'base',xtra:false,link:'https://shopee.ph/list/power+bank+20000mah'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Luggage Tag',sub:'Luggage',type:'Luggage tags & covers',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/luggage+tag'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Foldable Travel Duffel Bag',sub:'Travel bags',type:'Duffel bags',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/foldable+travel+duffel+bag'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Compression Travel Bags',sub:'Luggage',type:'Packing cubes',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/compression+travel+bags'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Travel Toiletry Bag',sub:'Travel accessories',type:'Packing sets',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/travel+toiletry+bag'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Noise-Cancelling Earbuds',sub:'Gadgets on the go',type:'Noise-cancelling headphones',comm:'2.5–4%',ct:'base',xtra:false,link:'https://shopee.ph/list/noise+cancelling+earbuds'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Travel Size Skincare Set',sub:'Comfort & health',type:'Travel skincare sets',comm:'7–10%',ct:'high',xtra:true,link:'https://shopee.ph/list/travel+size+skincare+set'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Lightweight Crossbody Travel Bag',sub:'Travel bags',type:'Crossbody bags',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/lightweight+crossbody+travel+bag'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Travel Cable Organizer',sub:'Travel accessories',type:'Packing sets',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/travel+cable+organizer'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Fanny Pack / Belt Bag',sub:'Travel bags',type:'Fanny packs',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/fanny+pack+belt+bag'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Compression Socks',sub:'Comfort & health',type:'Compression socks',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/compression+socks'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Portable Luggage Scale',sub:'Travel accessories',type:'Packing sets',comm:'3–5%',ct:'mid',xtra:false,link:'https://shopee.ph/list/portable+luggage+scale'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Action Camera (GoPro type)',sub:'Gadgets on the go',type:'Action cameras',comm:'2.5–4%',ct:'base',xtra:false,link:'https://shopee.ph/list/action+camera+philippines'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Reusable Collapsible Water Bottle',sub:'Comfort & health',type:'Reusable water bottles',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/collapsible+water+bottle'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Eye Mask + Earplugs Travel Set',sub:'Travel accessories',type:'Eye masks & earplugs',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/eye+mask+earplugs+travel'},
+  {dept:'move',dL:'✈️ Move',dC:'#e8590c',dB:'#fff4e6',product:'Portable Mini Fan',sub:'Comfort & health',type:'Portable humidifiers',comm:'3–5%',ct:'mid',xtra:false,link:'https://shopee.ph/list/portable+mini+fan+philippines'},
+  // ── WORK (22) ──────────────────────────────────────────────────────
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'Leather Desk Mat',sub:'Desk setup',type:'Desk mats & pads',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/leather+desk+mat'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'Wireless Mechanical Keyboard',sub:'Input devices',type:'Mechanical keyboards',comm:'2.5–4%',ct:'base',xtra:true,link:'https://shopee.ph/list/wireless+mechanical+keyboard'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'Wireless Mouse',sub:'Input devices',type:'Productivity mice',comm:'2.5–4%',ct:'base',xtra:true,link:'https://shopee.ph/list/wireless+mouse+philippines'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'Laptop Stand',sub:'Desk setup',type:'Laptop stands',comm:'3–5%',ct:'mid',xtra:true,link:'https://shopee.ph/list/laptop+stand+philippines'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'Monitor Stand / Riser',sub:'Desk setup',type:'Monitor stands & risers',comm:'3–5%',ct:'mid',xtra:false,link:'https://shopee.ph/list/monitor+stand+riser'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'USB-C Hub / Docking Station',sub:'Tech accessories',type:'USB hubs & docking stations',comm:'2.5–4%',ct:'base',xtra:false,link:'https://shopee.ph/list/usb+c+hub+docking+station'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'Noise-Cancelling Headphones',sub:'Audio',type:'Over-ear headphones',comm:'2.5–4%',ct:'base',xtra:true,link:'https://shopee.ph/list/noise+cancelling+headphones+philippines'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'Wireless Earbuds (TWS)',sub:'Audio',type:'Wireless earbuds',comm:'2.5–4%',ct:'base',xtra:true,link:'https://shopee.ph/list/wireless+earbuds+tws+philippines'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'Ring Light with Stand',sub:'Tech accessories',type:'Ring lights',comm:'3–5%',ct:'mid',xtra:true,link:'https://shopee.ph/list/ring+light+with+stand'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'USB Microphone',sub:'Audio',type:'USB microphones',comm:'2.5–4%',ct:'base',xtra:false,link:'https://shopee.ph/list/usb+microphone+philippines'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'Webcam HD 1080p',sub:'Tech accessories',type:'Webcams',comm:'2.5–4%',ct:'base',xtra:false,link:'https://shopee.ph/list/webcam+hd+1080p'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'Desk Organizer Set',sub:'Desk setup',type:'Desk organizers',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/desk+organizer+set'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'LED Desk Lamp with USB',sub:'Desk setup',type:'Desk lamps',comm:'3–5%',ct:'mid',xtra:true,link:'https://shopee.ph/list/led+desk+lamp+usb'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'Hardcover Planner / Notebook',sub:'Stationery',type:'Notebooks & journals',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/hardcover+planner+notebook'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'Cable Management Box',sub:'Tech accessories',type:'USB hubs & docking stations',comm:'3–5%',ct:'mid',xtra:false,link:'https://shopee.ph/list/cable+management+box'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'Ergonomic Chair',sub:'Ergonomics',type:'Ergonomic chairs',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/ergonomic+chair+philippines'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'Lumbar Support Pillow',sub:'Ergonomics',type:'Lumbar support pillows',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/lumbar+support+pillow'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'Portable SSD',sub:'Tech accessories',type:'Portable SSDs',comm:'2.5–4%',ct:'base',xtra:false,link:'https://shopee.ph/list/portable+ssd+philippines'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'Wrist Rest for Keyboard',sub:'Ergonomics',type:'Wrist rests',comm:'3–5%',ct:'mid',xtra:false,link:'https://shopee.ph/list/wrist+rest+keyboard'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'Aesthetic Sticky Notes Set',sub:'Stationery',type:'Sticky notes',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/aesthetic+sticky+notes'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'Monitor Arm',sub:'Desk setup',type:'Monitor stands & risers',comm:'3–5%',ct:'mid',xtra:false,link:'https://shopee.ph/list/monitor+arm+philippines'},
+  {dept:'work',dL:'💻 Work',dC:'#495057',dB:'#f1f3f5',product:'Drawing Tablet',sub:'Input devices',type:'Drawing tablets',comm:'2.5–4%',ct:'base',xtra:false,link:'https://shopee.ph/list/drawing+tablet+philippines'},
+  // ── PLAY (22) ──────────────────────────────────────────────────────
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'1000-Piece Jigsaw Puzzle',sub:'Puzzles & board games',type:'Jigsaw puzzles',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/1000+piece+jigsaw+puzzle'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'Ukulele (Beginner)',sub:'Music',type:'Ukuleles & guitars',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/ukulele+beginner+philippines'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'Watercolor Paint Set',sub:'Art & craft',type:'Watercolor sets',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/watercolor+paint+set'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'Sketchbook / Art Pad',sub:'Art & craft',type:'Sketchbooks & art pads',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/sketchbook+art+pad'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'Portable Bluetooth Speaker',sub:'Music',type:'Portable speakers',comm:'2.5–4%',ct:'base',xtra:true,link:'https://shopee.ph/list/portable+bluetooth+speaker'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'Vinyl Record Player',sub:'Music',type:'Record players & vinyl',comm:'3–5%',ct:'mid',xtra:true,link:'https://shopee.ph/list/vinyl+record+player+philippines'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'Board Game (Uno, Jenga, etc.)',sub:'Puzzles & board games',type:'Card games',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/board+game+philippines'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'Aesthetic Playing Cards',sub:'Puzzles & board games',type:'Card games',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/aesthetic+playing+cards'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'Diamond Painting Kit',sub:'Art & craft',type:'Craft kits & DIY',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/diamond+painting+kit'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'Acrylic Paint Set',sub:'Art & craft',type:'Canvas & paints',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/acrylic+paint+set'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'Hammock (Indoor/Outdoor)',sub:'Outdoor & recreation',type:'Hammocks',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/hammock+philippines'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'Camping Tent',sub:'Outdoor & recreation',type:'Camping gear',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/camping+tent+philippines'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'Picnic Mat / Blanket',sub:'Outdoor & recreation',type:'Picnic sets',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/picnic+mat+philippines'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'Colored Pencil Set (72/120pcs)',sub:'Art & craft',type:'Colored pencils & markers',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/colored+pencil+set'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'E-reader / Kindle Case',sub:'Books & reading',type:'E-readers & cases',comm:'3–5%',ct:'mid',xtra:false,link:'https://shopee.ph/list/kindle+case+philippines'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'Mobile Gaming Controller',sub:'Gaming',type:'Controllers & accessories',comm:'2.5–4%',ct:'base',xtra:true,link:'https://shopee.ph/list/mobile+gaming+controller'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'DIY Candle Making Kit',sub:'Art & craft',type:'Craft kits & DIY',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/diy+candle+making+kit'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'Resin Art Kit',sub:'Art & craft',type:'Craft kits & DIY',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/resin+art+kit+philippines'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'Badminton Racket Set',sub:'Outdoor & recreation',type:'Sports equipment',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/badminton+racket+set'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'Frisbee / Flying Disc',sub:'Outdoor & recreation',type:'Sports equipment',comm:'5–7%',ct:'high',xtra:false,link:'https://shopee.ph/list/frisbee+flying+disc'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'Crochet Starter Kit',sub:'Art & craft',type:'Craft kits & DIY',comm:'5–7%',ct:'high',xtra:true,link:'https://shopee.ph/list/crochet+starter+kit'},
+  {dept:'play',dL:'🎮 Play',dC:'#c2255c',dB:'#fff0f6',product:'Bluetooth Karaoke Microphone',sub:'Music',type:'Instrument accessories',comm:'2.5–4%',ct:'base',xtra:true,link:'https://shopee.ph/list/bluetooth+karaoke+microphone'},
+];
+
+function commBadge(p) {
+  const cls = p.ct==='high'?'comm-high':p.ct==='mid'?'comm-mid':'comm-base';
+  return `<span class="comm-badge ${cls}">${p.xtra?'🌟 ':''}${p.comm}</span>`;
+}
+
+function render(data) {
+  document.getElementById('table-body').innerHTML = data.map((p,i)=>`
+    <tr data-dept="${p.dept}">
+      <td class="td-num">${i+1}</td>
+      <td><span class="dept-tag" style="background:${p.dB};color:${p.dC}">${p.dL}</span></td>
+      <td class="td-product">${p.product}</td>
+      <td class="td-sub">${p.sub}</td>
+      <td class="td-type">${p.type}</td>
+      <td>${commBadge(p)}</td>
+      <td class="td-link"><a href="${p.link}" target="_blank" rel="noopener">Search on Shopee <i class="ti ti-external-link"></i></a></td>
+    </tr>`).join('');
+  document.getElementById('count-bar').innerHTML = `Showing <b>${data.length}</b> of <b>${products.length}</b> products`;
+}
+
+let activeDept='all', searchQ='';
+function applyFilters() {
+  let data = products;
+  if (activeDept!=='all') data=data.filter(p=>p.dept===activeDept);
+  if (searchQ) data=data.filter(p=>p.product.toLowerCase().includes(searchQ)||p.sub.toLowerCase().includes(searchQ)||p.type.toLowerCase().includes(searchQ)||p.dL.toLowerCase().includes(searchQ));
+  render(data);
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active'); activeDept=btn.dataset.dept; applyFilters();
+  });
+});
+document.getElementById('search').addEventListener('input',e=>{searchQ=e.target.value.trim().toLowerCase();applyFilters();});
+
+render(products);
+</script>
+</body>
+</html>
