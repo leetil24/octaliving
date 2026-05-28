@@ -257,34 +257,177 @@
     .back-top { position: fixed; bottom: 24px; right: 24px; background: var(--black); color: #fff; border: 1px solid rgba(255,255,255,.1); width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; transition: all .2s; opacity: 0; pointer-events: none; z-index: 999; text-decoration: none; }
     .back-top.visible { opacity: 1; pointer-events: auto; }
     .back-top:hover { background: var(--gold); color: var(--black); }
+    /* ── MOBILE NAV HAMBURGER ── */
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 8px; color: var(--black); font-size: 22px; margin-left: auto; flex-shrink: 0; }
+    .mobile-menu { display: none; position: fixed; inset: 0; background: var(--white); z-index: 200; overflow-y: auto; flex-direction: column; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--gray100); }
+    .mobile-menu-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--black); padding: 4px; }
+    .mobile-menu-body { padding: 12px 0; flex: 1; }
+    .mobile-dept-link { display: flex; align-items: center; gap: 12px; padding: 14px 20px; font-size: 15px; font-weight: 500; color: var(--black); text-decoration: none; border-bottom: 1px solid var(--gray50); }
+    .mobile-dept-link i { font-size: 18px; width: 24px; flex-shrink: 0; }
+    .mobile-dept-link:active { background: var(--gray50); }
+    .mobile-menu-footer { padding: 20px; border-top: 1px solid var(--gray100); display: flex; flex-direction: column; gap: 10px; }
+    .mobile-menu-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px; border-radius: 10px; font-family: var(--font); font-size: 14px; font-weight: 500; text-decoration: none; }
+    .mobile-menu-btn.primary { background: var(--black); color: #fff; }
+    .mobile-menu-btn.secondary { background: var(--gray50); color: var(--black); border: 1px solid var(--gray200); }
+
+    /* ── TABLET (max 1024px) ── */
+    @media (max-width: 1024px) {
+      .products-grid { grid-template-columns: repeat(3, 1fr); }
+      .mini-grid { grid-template-columns: repeat(4, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr 1fr; gap: 32px; }
+      .footer-grid > div:first-child { grid-column: 1 / -1; }
+    }
+
+    /* ── TABLET PORTRAIT (max 900px) ── */
     @media (max-width: 900px) {
-      .products-grid { grid-template-columns: repeat(2,1fr); }
-      .mini-grid { grid-template-columns: repeat(3,1fr); }
-      .footer-grid { grid-template-columns: 1fr 1fr; }
-      .trust-bar { grid-template-columns: repeat(2,1fr); }
+      .products-grid { grid-template-columns: repeat(2, 1fr); }
+      .mini-grid { grid-template-columns: repeat(3, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+      .trust-bar { grid-template-columns: repeat(2, 1fr); }
       .trust-item:nth-child(2) { border-right: none; }
       .trust-item:nth-child(3) { border-top: 1px solid var(--gray100); }
       .trust-item:nth-child(4) { border-top: 1px solid var(--gray100); border-right: none; }
+      .hero-title { font-size: 32px; }
     }
+
+    /* ── MOBILE (max 768px) ── */
     @media (max-width: 768px) {
-      .topbar-right,.nav-right-links { display: none; }
-      .topbar,.nav-main,.nav-cats,.section-wrap,.newsletter-section,.footer-main,.disclosure-bar { padding-left: 16px; padding-right: 16px; }
-      .hero-wrap { grid-template-columns: 1fr; padding: 10px 12px; }
-      .hero-main { min-height: 280px; padding: 24px 20px; }
-      .hero-title { font-size: 26px; }
-      .hero-side { flex-direction: row; }
-      .hero-cats-strip { padding: 0 12px 10px; }
-      .products-grid { grid-template-columns: repeat(2,1fr); gap: 8px; }
-      .card-shop-btn,.mini-shop-btn,.mini-card-shop { opacity: 1; transform: translateY(0); }
-      .mini-grid { grid-template-columns: repeat(2,1fr); }
-      .arrival-card { flex: 0 0 170px; }
-      .nl-heading { font-size: 26px; }
-      .nl-form { flex-direction: column; }
-      .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+      /* Nav */
+      .topbar { padding: 7px 16px; font-size: 11px; }
+      .topbar-right { display: none; }
+      .nav-main { padding: 0 16px; height: 56px; }
+      .nav-search { max-width: none; flex: 1; margin: 0 10px; height: 36px; }
+      .nav-search input { font-size: 13px; }
+      .nav-search-btn { display: none; }
+      .nav-actions { display: none; }
+      .nav-hamburger { display: flex; align-items: center; justify-content: center; }
+      .nav-cats { display: none; }
+
+      /* Hero */
+      .hero-wrap { grid-template-columns: 1fr; padding: 10px 16px 0; gap: 10px; }
+      .hero-main { min-height: 240px; padding: 24px 20px; border-radius: 14px; }
+      .hero-title { font-size: 24px; margin-bottom: 8px; }
+      .hero-sub { font-size: 13px; margin-bottom: 16px; display: none; }
+      .hero-badge { font-size: 10px; padding: 4px 10px; margin-bottom: 12px; }
+      .hero-actions { gap: 8px; }
+      .btn-primary { padding: 10px 18px; font-size: 13px; }
+      .btn-ghost { padding: 10px 16px; font-size: 13px; }
+      .hero-side { flex-direction: row; gap: 10px; padding: 0 16px 10px; }
+      .side-card { padding: 14px; border-radius: 12px; }
+      .side-card-title { font-size: 14px; }
+      .price-current { font-size: 16px; }
+      .side-card-img { font-size: 44px; right: 10px; }
+
+      /* Category strip */
+      .hero-cats-strip { padding: 8px 16px 12px; gap: 6px; }
+      .cat-pill { padding: 6px 12px; font-size: 11px; }
+
+      /* Trust bar */
+      .trust-bar { grid-template-columns: 1fr 1fr; }
+      .trust-item { padding: 12px 14px; gap: 8px; }
+      .trust-icon { font-size: 18px; }
+      .trust-title { font-size: 12px; }
+      .trust-sub { font-size: 10px; }
+
+      /* Sections */
+      .section-wrap { padding: 20px 16px 28px; }
+      .section-title { font-size: 18px; }
+      .section-eyebrow { font-size: 10px; }
+      .section-view-all { padding: 6px 12px; font-size: 12px; }
+
+      /* Products grid */
+      .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .card-img-wrap { height: 150px; }
+      .card-img-icon { font-size: 48px; }
+      .card-body { padding: 10px; gap: 4px; }
+      .card-name { font-size: 13px; }
+      .card-price { font-size: 14px; }
+      .card-shop-btn { opacity: 1; transform: translateY(0); padding: 10px; font-size: 11px; }
+
+      /* Filter row */
+      .filter-row { gap: 6px; margin-bottom: 14px; }
+      .filter-btn { padding: 5px 12px; font-size: 11px; }
+
+      /* New arrivals */
+      .arrivals-track { gap: 10px; min-height: 220px; }
+      .arrival-card { flex: 0 0 155px; border-radius: 10px; }
+      .a-img { height: 130px; }
+      .a-body { padding: 10px; }
+      .a-name { font-size: 12px; }
+      .a-price { font-size: 13px; }
+      .mini-shop-btn { opacity: 1; transform: translateY(0); padding: 8px; font-size: 11px; }
+      .scroll-btn { width: 32px; height: 32px; font-size: 16px; }
+
+      /* Dept blocks */
+      .dept-header { padding: 14px 16px; }
+      .dept-icon-wrap { width: 38px; height: 38px; font-size: 18px; }
+      .dept-name { font-size: 14px; }
+      .dept-count { font-size: 11px; }
+      .dept-body { padding: 14px 16px; }
+      .mini-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .mini-img { height: 90px; }
+      .mini-icon { font-size: 36px; }
+      .mini-body { padding: 8px; }
+      .mini-name { font-size: 11px; }
+      .mini-price { font-size: 12px; }
+      .mini-card-shop { opacity: 1; transform: translateY(0); padding: 7px; font-size: 10px; }
+
+      /* Newsletter */
+      .newsletter-section { padding: 40px 16px; }
+      .nl-heading { font-size: 22px; margin-bottom: 10px; }
+      .nl-sub { font-size: 13px; margin-bottom: 24px; }
+      .nl-badge { font-size: 10px; padding: 5px 12px; margin-bottom: 16px; }
+      .nl-perks { gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+      .nl-perk { font-size: 11px; }
+      .nl-perk-divider { display: none; }
+      .nl-form { flex-direction: column; gap: 8px; }
+      .nl-input { padding: 13px 13px 13px 40px; font-size: 14px; }
+      .nl-submit { padding: 13px; justify-content: center; }
+      .nl-social-proof { flex-direction: column; gap: 10px; margin-top: 28px; padding-top: 24px; }
+
+      /* Footer */
+      .footer-main { padding: 32px 16px 28px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+      .footer-grid > div:first-child { order: -1; }
+      .footer-tagline { max-width: 100%; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 10px; padding-top: 20px; }
+      .footer-legal { gap: 14px; }
+
+      /* Disclosure */
+      .disclosure-bar { padding: 10px 16px; font-size: 10px; }
+
+      /* Back to top */
+      .back-top { bottom: 16px; right: 16px; width: 38px; height: 38px; font-size: 18px; }
     }
+
+    /* ── SMALL MOBILE (max 480px) ── */
     @media (max-width: 480px) {
-      .hero-side { flex-direction: column; }
-      .products-grid { grid-template-columns: 1fr; }
+      .hero-wrap { padding: 8px 12px 0; }
+      .hero-main { min-height: 220px; padding: 20px 16px; border-radius: 12px; }
+      .hero-title { font-size: 21px; }
+      .hero-side { padding: 0 12px 8px; }
+      .hero-cats-strip { padding: 8px 12px 10px; }
+      .section-wrap { padding: 16px 12px 24px; }
+      .products-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .card-img-wrap { height: 130px; }
+      .arrival-card { flex: 0 0 140px; }
+      .a-img { height: 110px; }
+      .mini-grid { grid-template-columns: repeat(2, 1fr); gap: 7px; }
+      .newsletter-section { padding: 32px 12px; }
+      .footer-main { padding: 28px 12px 24px; }
+      .disclosure-bar { padding: 8px 12px; }
+      .trust-item { padding: 10px 10px; }
+      .trust-sub { display: none; }
+    }
+
+    /* ── VERY SMALL (max 360px) ── */
+    @media (max-width: 360px) {
+      .hero-title { font-size: 19px; }
+      .products-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+      .arrival-card { flex: 0 0 130px; }
+      .cat-pill { padding: 5px 10px; font-size: 10px; }
     }
   </style>
 </head>
@@ -320,7 +463,32 @@
     <button class="nav-action-btn"><i class="ti ti-heart"></i></button>
     <button class="nav-action-btn"><i class="ti ti-share"></i></button>
   </div>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu"><i class="ti ti-menu-2"></i></button>
 </nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Navigation menu">
+  <div class="mobile-menu-header">
+    <a href="/" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+      <svg width="24" height="24" viewBox="0 0 30 30" fill="none"><path d="M15 2 C9 2 4.5 6 3.5 11.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/><path d="M3.5 11.5 C2.5 14 2.5 16 3.5 18.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/><path d="M3.5 18.5 C4.5 24 9 28 15 28" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/><path d="M15 28 C21 28 25.5 24 26.5 18.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/><path d="M26.5 18.5 C27.5 16 27.5 14 26.5 11.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/><path d="M26.5 11.5 C25.5 6 21 2 15 2" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span style="font-size:16px;font-weight:600;color:var(--black);">Octa<span style="color:var(--gold)">Living</span></span>
+    </a>
+    <button class="mobile-menu-close" id="mobile-menu-close"><i class="ti ti-x"></i></button>
+  </div>
+  <div class="mobile-menu-body">
+    <a href="#featured" class="mobile-dept-link" onclick="closeMobileMenu()"><i class="ti ti-home" style="color:#3b5bdb"></i> Spaces</a>
+    <a href="#featured" class="mobile-dept-link" onclick="closeMobileMenu()"><i class="ti ti-coffee" style="color:#e67700"></i> Eats</a>
+    <a href="#featured" class="mobile-dept-link" onclick="closeMobileMenu()"><i class="ti ti-shirt" style="color:#9c36b5"></i> Style</a>
+    <a href="#featured" class="mobile-dept-link" onclick="closeMobileMenu()"><i class="ti ti-heart-rate-monitor" style="color:#2f9e44"></i> Well</a>
+    <a href="#featured" class="mobile-dept-link" onclick="closeMobileMenu()"><i class="ti ti-plane" style="color:#e8590c"></i> Move</a>
+    <a href="#featured" class="mobile-dept-link" onclick="closeMobileMenu()"><i class="ti ti-device-laptop" style="color:#495057"></i> Work</a>
+    <a href="#featured" class="mobile-dept-link" onclick="closeMobileMenu()"><i class="ti ti-confetti" style="color:#c2255c"></i> Play</a>
+  </div>
+  <div class="mobile-menu-footer">
+    <a href="https://explorer.octaliving.com" class="mobile-menu-btn primary"><i class="ti ti-layout-grid"></i> Browse all departments</a>
+    <a href="#newsletter" class="mobile-menu-btn secondary" onclick="closeMobileMenu()"><i class="ti ti-mail"></i> Get deals by email</a>
+  </div>
+</div>
 
 <div class="nav-cats">
   <button class="nav-all-btn"><i class="ti ti-layout-grid"></i> All departments</button>
@@ -783,6 +951,17 @@ document.getElementById('nl-submit-btn').addEventListener('click', () => {
 });
 emailEl.addEventListener('input', () => emailEl.style.borderColor = '');
 emailEl.addEventListener('keydown', e => { if (e.key==='Enter') document.getElementById('nl-submit-btn').click(); });
+
+// Mobile menu
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('nav-hamburger').addEventListener('click', () => {
+  document.getElementById('mobile-menu').classList.add('open');
+  document.body.style.overflow = 'hidden';
+});
+document.getElementById('mobile-menu-close').addEventListener('click', closeMobileMenu);
 
 // Back to top
 const bt = document.getElementById('back-top');
