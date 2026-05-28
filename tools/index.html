@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Octa Living — Link Generator v4</title>
+<title>Octa Living — Link Generator v5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -110,6 +110,20 @@
   .btn-reset:hover { background: var(--surface); color: var(--text); }
   @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
+  /* Image upload */
+  .img-upload-wrap { display: flex; flex-direction: column; gap: 8px; }
+  .img-preview { width: 72px; height: 72px; border-radius: var(--radius-sm); border: 0.5px solid var(--border); background: var(--surface2); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+  .img-preview img { width: 100%; height: 100%; object-fit: cover; }
+  #img-preview-placeholder { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-3); font-size: 10px; }
+  .img-actions { display: flex; align-items: center; gap: 8px; }
+  .img-upload-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; font-size: 12px; font-weight: 500; font-family: 'DM Sans', sans-serif; background: var(--surface2); border: 0.5px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; color: var(--text-2); white-space: nowrap; flex-shrink: 0; transition: all .15s; }
+  .img-upload-btn:hover { background: var(--text); color: #fff; border-color: var(--text); }
+  .img-upload-btn.uploading { opacity: .6; cursor: not-allowed; }
+  .img-or { font-size: 11px; color: var(--text-3); flex-shrink: 0; }
+  .img-status-ok { color: var(--success-text); }
+  .img-status-err { color: var(--error-text); }
+  .img-status-loading { color: var(--warn-text); }
+
   /* Toggle switch */
   .toggle-wrap { display: inline-flex; align-items: center; cursor: pointer; }
   .toggle-wrap input { display: none; }
@@ -137,7 +151,7 @@
     </div>
     <div class="header-text">
       <p>Shopee link generator</p>
-      <p>Octa Living · v4 — hero flag + auto-fill</p>
+      <p>Octa Living · v5 — Cloudinary image upload</p>
     </div>
     <div class="db-pill">
       <div class="db-dot" id="db-dot"></div>
@@ -183,8 +197,25 @@
       </div>
     </div>
     <div style="margin-top:8px;">
-      <label class="field-label">Image URL (optional)</label>
-      <input type="url" id="productImage" placeholder="https://..." />
+      <label class="field-label">Product image</label>
+      <div class="img-upload-wrap">
+        <div class="img-preview" id="img-preview">
+          <span id="img-preview-placeholder">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span>No image</span>
+          </span>
+        </div>
+        <div class="img-actions">
+          <label class="img-upload-btn" id="img-upload-label">
+            <input type="file" id="img-file-input" accept="image/*" style="display:none" />
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+            Upload photo
+          </label>
+          <div class="img-or">or</div>
+          <input type="url" id="productImage" placeholder="Paste image URL..." style="flex:1;" />
+        </div>
+        <div id="img-upload-status" style="display:none; font-size:11px; margin-top:6px; display:flex; align-items:center; gap:6px;"></div>
+      </div>
     </div>
     <div id="comm-display" style="display:none; margin-top:2px;"></div>
   </div>
@@ -502,6 +533,94 @@ const productRef = [
   {name:'Bluetooth Karaoke Microphone',dept:'play',sub:'Music',type:'Instrument accessories',comm:'2.5–4%',commType:'base',xtra:true},
 ];
 
+// ── Price range hints by product name (PH Shopee typical ranges) ───────
+const priceHints = {
+  // SPACES
+  '3D Foam Brick Wallpaper':'₱150–₱500','LED Fairy String Lights':'₱150–₱600',
+  'Throw Pillow with Insert':'₱300–₱1,200','Bedside Table / Nightstand':'₱800–₱3,500',
+  'Aesthetic Wall Clock':'₱300–₱1,500','Scented Soy Candle':'₱200–₱800',
+  'Macramé Wall Hanging':'₱300–₱1,200','Storage Ottoman / Pouf':'₱800–₱3,000',
+  'Artificial Indoor Plant':'₱200–₱1,500','Ceramic Plant Pot':'₱150–₱800',
+  'Linen Bed Sheet Set':'₱600–₱2,500','Blackout Curtains':'₱400–₱2,000',
+  'Arc Floor Lamp':'₱800–₱3,500','Floating Wall Shelves':'₱300–₱1,200',
+  'Bamboo Ladder Shelf':'₱500–₱2,000','Photo Frame Set':'₱200–₱800',
+  'Bathroom Organizer Set':'₱300–₱1,200','Aesthetic Doormat':'₱200–₱800',
+  'Rattan Storage Basket':'₱300–₱1,500','Aroma Diffuser':'₱400–₱1,500',
+  'LED Mushroom Night Light':'₱150–₱600','Bedside Lamp':'₱400–₱1,800',
+  // EATS
+  'Pour-Over Coffee Set':'₱800–₱3,000','Gooseneck Electric Kettle':'₱800–₱3,500',
+  'Insulated Tumbler / Thermos':'₱400–₱2,000','Ceramic Mug Set':'₱300–₱1,200',
+  'Air Fryer':'₱1,500–₱5,000','Rice Cooker':'₱800–₱3,000',
+  'Wooden Cutting Board':'₱300–₱1,500','Chef Knife Set':'₱500–₱3,000',
+  'French Press Coffee Maker':'₱500–₱2,000','Milk Frother':'₱200–₱800',
+  'Glass Water Carafe':'₱300–₱1,200','Portable Blender / Juicer':'₱500–₱2,000',
+  'Non-stick Fry Pan':'₱400–₱2,500','Bento Lunch Box':'₱300–₱1,200',
+  'Silicone Kitchen Utensil Set':'₱300–₱1,000','Digital Kitchen Scale':'₱300–₱1,200',
+  'Cold Brew Coffee Bottle':'₱400–₱1,500','Drip Coffee Bag (sachets)':'₱150–₱600',
+  'Matcha Whisk Set':'₱300–₱1,200','Airfryer Accessories Set':'₱300–₱1,200',
+  'Wooden Serving Board':'₱300–₱1,500',
+  // STYLE
+  'Oversized T-Shirt':'₱200–₱800','Linen Pants':'₱400–₱1,500',
+  'Canvas Tote Bag':'₱200–₱800','Mini Crossbody Bag':'₱300–₱1,500',
+  'Canvas Slip-On Shoes':'₱400–₱1,500','Midi Dress':'₱400–₱1,800',
+  'Jogger Pants':'₱300–₱1,200','Bucket Hat':'₱200–₱800',
+  'Sling Bag':'₱300–₱1,500','Sunglasses UV400':'₱200–₱1,000',
+  'High-Waist Leggings':'₱300–₱1,200','Sports Bra':'₱300–₱1,200',
+  'Baby Romper / Onesie':'₱200–₱800','School Uniform Set (Kids)':'₱400–₱1,500',
+  'Maternity Dress':'₱500–₱2,000','Slim Fit Polo Shirt (Men)':'₱300–₱1,200',
+  'Minimalist Leather Watch':'₱500–₱3,000','Slim Card Holder / Wallet':'₱200–₱800',
+  'Denim Shorts':'₱300–₱1,200','Chunky Sneakers':'₱600–₱2,500',
+  'Nursing Bra':'₱400–₱1,500','Swaddle Blanket':'₱300–₱1,200',
+  // WELL
+  'Yoga Mat (Non-slip)':'₱500–₱2,000','Resistance Band Set':'₱200–₱800',
+  'Korean Skincare Set':'₱500–₱3,000','Sunscreen SPF 50':'₱200–₱800',
+  'Collagen Supplement':'₱500–₱2,500','Electric Facial Massager':'₱500–₱3,000',
+  'Sleep Eye Mask':'₱150–₱600','Foam Roller':'₱400–₱1,500',
+  'Adjustable Dumbbell Set':'₱1,500–₱8,000','Vitamin C Serum':'₱200–₱1,200',
+  'Niacinamide Serum':'₱200–₱1,000','Facial Sheet Mask':'₱50–₱300',
+  'Electric Scalp Massager':'₱400–₱2,000','Gua Sha + Jade Roller Set':'₱200–₱800',
+  'Multivitamins (Vit C + Zinc)':'₱200–₱800','Jump Rope / Speed Rope':'₱150–₱600',
+  'Acne / Pimple Patch':'₱100–₱400','Bath & Body Scrub Set':'₱300–₱1,200',
+  'Hair Vitamin / Serum':'₱200–₱1,000','Weighted Sleep Blanket':'₱800–₱3,500',
+  'Essential Oil Diffuser':'₱400–₱1,800','Probiotics Supplement':'₱400–₱2,000',
+  // MOVE
+  'Hardshell Carry-On Luggage':'₱2,000–₱8,000','Packing Cubes Set':'₱300–₱1,200',
+  'Travel Neck Pillow':'₱200–₱800','Passport Holder / Organizer':'₱200–₱800',
+  'Anti-Theft Backpack':'₱800–₱3,500','Universal Travel Adapter':'₱300–₱1,200',
+  'Power Bank 20000mAh':'₱600–₱2,500','Luggage Tag':'₱100–₱400',
+  'Foldable Travel Duffel Bag':'₱400–₱2,000','Compression Travel Bags':'₱200–₱800',
+  'Travel Toiletry Bag':'₱200–₱1,000','Noise-Cancelling Earbuds':'₱800–₱5,000',
+  'Travel Size Skincare Set':'₱400–₱1,500','Lightweight Crossbody Travel Bag':'₱400–₱2,000',
+  'Travel Cable Organizer':'₱200–₱800','Fanny Pack / Belt Bag':'₱300–₱1,500',
+  'Compression Socks':'₱200–₱800','Portable Luggage Scale':'₱200–₱600',
+  'Action Camera (GoPro type)':'₱2,000–₱12,000','Reusable Collapsible Water Bottle':'₱200–₱800',
+  'Eye Mask + Earplugs Travel Set':'₱150–₱500','Portable Mini Fan':'₱200–₱1,000',
+  // WORK
+  'Leather Desk Mat':'₱500–₱2,500','Wireless Mechanical Keyboard':'₱800–₱5,000',
+  'Wireless Mouse':'₱300–₱2,000','Laptop Stand':'₱400–₱2,000',
+  'Monitor Stand / Riser':'₱400–₱2,000','USB-C Hub / Docking Station':'₱500–₱3,000',
+  'Noise-Cancelling Headphones':'₱1,500–₱8,000','Wireless Earbuds (TWS)':'₱500–₱5,000',
+  'Ring Light with Stand':'₱500–₱2,500','USB Microphone':'₱800–₱4,000',
+  'Webcam HD 1080p':'₱800–₱4,000','Desk Organizer Set':'₱300–₱1,500',
+  'LED Desk Lamp with USB':'₱500–₱2,000','Hardcover Planner / Notebook':'₱300–₱1,200',
+  'Cable Management Box':'₱300–₱1,200','Ergonomic Chair':'₱3,000–₱15,000',
+  'Lumbar Support Pillow':'₱400–₱2,000','Portable SSD':'₱1,500–₱6,000',
+  'Wrist Rest for Keyboard':'₱200–₱800','Aesthetic Sticky Notes Set':'₱150–₱500',
+  'Monitor Arm':'₱800–₱4,000','Drawing Tablet':'₱1,500–₱8,000',
+  // PLAY
+  '1000-Piece Jigsaw Puzzle':'₱300–₱1,200','Ukulele (Beginner)':'₱800–₱3,000',
+  'Watercolor Paint Set':'₱300–₱1,500','Sketchbook / Art Pad':'₱200–₱800',
+  'Portable Bluetooth Speaker':'₱500–₱3,000','Vinyl Record Player':'₱2,000–₱8,000',
+  'Board Game (Uno, Jenga, etc.)':'₱300–₱1,500','Aesthetic Playing Cards':'₱150–₱600',
+  'Diamond Painting Kit':'₱300–₱1,200','Acrylic Paint Set':'₱300–₱1,500',
+  'Hammock (Indoor/Outdoor)':'₱500–₱2,500','Camping Tent':'₱1,000–₱8,000',
+  'Picnic Mat / Blanket':'₱300–₱1,200','Colored Pencil Set (72/120pcs)':'₱300–₱1,200',
+  'E-reader / Kindle Case':'₱300–₱1,200','Mobile Gaming Controller':'₱500–₱3,000',
+  'DIY Candle Making Kit':'₱400–₱1,500','Resin Art Kit':'₱500–₱2,000',
+  'Badminton Racket Set':'₱500–₱3,000','Frisbee / Flying Disc':'₱150–₱600',
+  'Crochet Starter Kit':'₱300–₱1,200','Bluetooth Karaoke Microphone':'₱500–₱2,500',
+};
+
 // ── Department structure ───────────────────────────────────────────────
 const depts = [
   {id:'spaces',name:'Spaces',subs:[
@@ -668,22 +787,24 @@ function findBestMatch(name) {
 // ── Auto-fill from match ───────────────────────────────────────────────
 function applyMatch(match) {
   const m = match.match;
-  // Set dept
   const deptSel = document.getElementById('dept');
   deptSel.value = m.dept;
   window.onDeptChange(false);
-  // Set subcat
   const subSel = document.getElementById('subcat');
   subSel.value = m.sub;
   window.onSubcatChange(false);
-  // Set item type
   const itemSel = document.getElementById('itemtype');
   if ([...itemSel.options].some(o => o.value === m.type)) itemSel.value = m.type;
   updateSubIdPreview();
   // Commission display
   const commEl = document.getElementById('comm-display');
   const cls = m.commType === 'high' ? 'comm-high' : m.commType === 'mid' ? 'comm-mid' : 'comm-base';
-  commEl.innerHTML = `<span class="comm-badge ${cls}">${m.xtra ? '🌟 ' : ''}Est. commission: ${m.comm}</span>`;
+  // Price hint
+  const priceRange = priceHints[m.name] || null;
+  const priceHintHtml = priceRange
+    ? `<div id="price-hint" style="font-size:11px;color:var(--text-3);margin-top:4px;">💡 Typical price on Shopee PH: <strong style="color:var(--text-2)">${priceRange}</strong></div>`
+    : '';
+  commEl.innerHTML = `<span class="comm-badge ${cls}">${m.xtra ? '🌟 ' : ''}Est. commission: ${m.comm}</span>${priceHintHtml}`;
   commEl.style.display = 'block';
   // Banner
   const pct = Math.round(match.score * 100);
@@ -754,7 +875,69 @@ window.clearUrl = function() {
 // Init dropdowns
 window.onDeptChange(false);
 
-// ── Hero flag toggle ───────────────────────────────────────────────────
+// ── Cloudinary image upload ────────────────────────────────────────────
+const CLOUDINARY_CLOUD = 'dtywj4n8m';
+const CLOUDINARY_PRESET = 'octaliving';
+
+document.getElementById('img-file-input').addEventListener('change', async function() {
+  const file = this.files[0];
+  if (!file) return;
+
+  // Validate type & size (max 5MB)
+  if (!file.type.startsWith('image/')) { showImgStatus('error', 'Please select an image file.'); return; }
+  if (file.size > 5 * 1024 * 1024) { showImgStatus('error', 'Image must be under 5MB.'); return; }
+
+  const label = document.getElementById('img-upload-label');
+  label.classList.add('uploading');
+  label.querySelector('span') && (label.querySelector('span').textContent = 'Uploading…');
+  showImgStatus('loading', 'Uploading to Cloudinary…');
+
+  try {
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', CLOUDINARY_PRESET);
+    fd.append('folder', 'octaliving');
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
+      method: 'POST', body: fd
+    });
+    const data = await res.json();
+
+    if (data.secure_url) {
+      document.getElementById('productImage').value = data.secure_url;
+      // Show preview
+      const preview = document.getElementById('img-preview');
+      preview.innerHTML = `<img src="${data.secure_url}" alt="Product image" />`;
+      showImgStatus('ok', '✓ Uploaded to Cloudinary');
+    } else {
+      showImgStatus('error', 'Upload failed — try again.');
+    }
+  } catch(e) {
+    showImgStatus('error', 'Upload error: ' + e.message);
+  } finally {
+    label.classList.remove('uploading');
+    this.value = ''; // reset file input
+  }
+});
+
+// Update preview if URL is pasted manually
+document.getElementById('productImage').addEventListener('input', function() {
+  const url = this.value.trim();
+  const preview = document.getElementById('img-preview');
+  if (url) {
+    preview.innerHTML = `<img src="${url}" alt="Product image" onerror="this.parentElement.innerHTML='<span id=\\'img-preview-placeholder\\'><svg width=\\'22\\' height=\\'22\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.5\\' stroke-linecap=\\'round\\' stroke-linejoin=\\'round\\'><rect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\'/><circle cx=\\'8.5\\' cy=\\'8.5\\' r=\\'1.5\\'/><polyline points=\\'21 15 16 10 5 21\\'/></svg><span>No image</span></span>'" />`;
+  } else {
+    preview.innerHTML = `<span id="img-preview-placeholder"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>No image</span></span>`;
+  }
+});
+
+function showImgStatus(type, msg) {
+  const el = document.getElementById('img-upload-status');
+  el.style.display = 'flex';
+  el.className = `img-status-${type}`;
+  el.textContent = msg;
+  if (type === 'ok') setTimeout(() => { el.style.display = 'none'; }, 3000);
+}
 document.getElementById('heroFlag').addEventListener('change', function() {
   const card = document.getElementById('hero-card');
   const extra = document.getElementById('hero-extra');
@@ -852,6 +1035,9 @@ window.reset = function() {
   document.getElementById('heroFlag').checked = false;
   document.getElementById('hero-extra').style.display = 'none';
   document.getElementById('hero-card').classList.remove('hero-on');
+  // Reset image preview
+  document.getElementById('img-preview').innerHTML = `<span id="img-preview-placeholder"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>No image</span></span>`;
+  document.getElementById('img-upload-status').style.display = 'none';
   clearSuggest();
   document.getElementById('url-clear').classList.remove('show');
   window.scrollTo({ top:0, behavior:'smooth' });
