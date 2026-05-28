@@ -295,7 +295,10 @@
     /* ── MOBILE (max 768px) ── */
     @media (max-width: 768px) {
       /* Nav */
-      .topbar { padding: 7px 16px; font-size: 11px; }
+      .topbar { padding: 6px 16px; font-size: 11px; overflow: hidden; }
+      .topbar > div:first-child { display: flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; }
+      .topbar-deal { white-space: nowrap; flex-shrink: 0; }
+      .topbar-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-left: 6px; }
       .topbar-right { display: none; }
       .nav-main { padding: 0 16px; height: 56px; }
       .nav-search { max-width: none; flex: 1; margin: 0 10px; height: 36px; }
@@ -306,27 +309,33 @@
       .nav-cats { display: none; }
 
       /* Hero */
-      .hero-wrap { grid-template-columns: 1fr; padding: 10px 16px 0; gap: 10px; }
-      .hero-main { min-height: 240px; padding: 24px 20px; border-radius: 14px; }
-      .hero-title { font-size: 24px; margin-bottom: 8px; }
-      .hero-sub { font-size: 13px; margin-bottom: 16px; display: none; }
+      .hero-wrap { grid-template-columns: 1fr; padding: 10px 12px 0; gap: 10px; }
+      .hero-main { min-height: 220px; padding: 22px 20px; border-radius: 14px; overflow: visible; }
+      .hero-title { font-size: 23px; margin-bottom: 8px; letter-spacing: -0.01em; }
+      .hero-sub { display: none; }
       .hero-badge { font-size: 10px; padding: 4px 10px; margin-bottom: 12px; }
-      .hero-actions { gap: 8px; }
+      .hero-actions { gap: 8px; flex-wrap: wrap; }
       .btn-primary { padding: 10px 18px; font-size: 13px; }
       .btn-ghost { padding: 10px 16px; font-size: 13px; }
-      .hero-side { flex-direction: row; gap: 10px; padding: 0 16px 10px; }
-      .side-card { padding: 14px; border-radius: 12px; }
+
+      /* Hero side cards — horizontal scroll on mobile */
+      .hero-side { flex-direction: row; gap: 10px; padding: 0 12px 10px; overflow-x: auto; scrollbar-width: none; }
+      .hero-side::-webkit-scrollbar { display: none; }
+      .side-card { padding: 14px; border-radius: 12px; min-width: 200px; flex: 0 0 200px; }
       .side-card-title { font-size: 14px; }
+      .side-card-sub { font-size: 11px; margin-bottom: 8px; }
       .price-current { font-size: 16px; }
-      .side-card-img { font-size: 44px; right: 10px; }
+      .price-original { font-size: 12px; }
+      .side-card-img { font-size: 44px; right: 10px; opacity: 0.05; }
+      .side-card-badge { font-size: 10px; padding: 2px 7px; margin-bottom: 8px; }
 
       /* Category strip */
-      .hero-cats-strip { padding: 8px 16px 12px; gap: 6px; }
+      .hero-cats-strip { padding: 8px 12px 12px; gap: 6px; }
       .cat-pill { padding: 6px 12px; font-size: 11px; }
 
       /* Trust bar */
       .trust-bar { grid-template-columns: 1fr 1fr; }
-      .trust-item { padding: 12px 14px; gap: 8px; }
+      .trust-item { padding: 12px 12px; gap: 8px; }
       .trust-icon { font-size: 18px; }
       .trust-title { font-size: 12px; }
       .trust-sub { font-size: 10px; }
@@ -434,7 +443,7 @@
 <body>
 
 <div class="topbar">
-  <div><span class="topbar-deal">NEW IN</span><span class="topbar-text">Fresh picks added weekly · All products link to verified Shopee sellers</span></div>
+  <div style="display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden;"><span class="topbar-deal">NEW IN</span><span class="topbar-text">Fresh picks added weekly · All products link to verified Shopee sellers</span></div>
   <div class="topbar-right">
     <a href="https://explorer.octaliving.com" class="topbar-link">Department explorer</a>
     <a href="https://tools.octaliving.com" class="topbar-link">Link generator</a>
