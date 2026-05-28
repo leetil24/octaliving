@@ -258,7 +258,9 @@
     .back-top.visible { opacity: 1; pointer-events: auto; }
     .back-top:hover { background: var(--gold); color: var(--black); }
     /* ── MOBILE NAV HAMBURGER ── */
-    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 8px; color: var(--black); font-size: 22px; margin-left: auto; flex-shrink: 0; }
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 8px; color: var(--black); font-size: 22px; flex-shrink: 0; }
+    .nav-search-mobile { display: none; background: none; border: none; width: 40px; height: 40px; border-radius: 8px; align-items: center; justify-content: center; cursor: pointer; color: var(--gray700); font-size: 20px; }
+    .nav-search-mobile:hover { background: var(--gray50); color: var(--black); }
     .mobile-menu { display: none; position: fixed; inset: 0; background: var(--white); z-index: 200; overflow-y: auto; flex-direction: column; }
     .mobile-menu.open { display: flex; }
     .mobile-menu-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--gray100); }
@@ -300,12 +302,11 @@
       .topbar-deal { white-space: nowrap; flex-shrink: 0; }
       .topbar-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-left: 6px; }
       .topbar-right { display: none; }
-      .nav-main { padding: 0 16px; height: 56px; }
-      .nav-search { max-width: none; flex: 1; margin: 0 10px; height: 36px; }
-      .nav-search input { font-size: 13px; }
-      .nav-search-btn { display: none; }
+      .nav-main { padding: 0 16px; height: 56px; gap: 10px; }
+      .nav-search { display: none; }
+      .nav-search-mobile { display: flex; margin-left: auto; }
       .nav-actions { display: none; }
-      .nav-hamburger { display: flex; align-items: center; justify-content: center; }
+      .nav-hamburger { display: flex; align-items: center; justify-content: center; margin-left: 0; }
       .nav-cats { display: none; }
 
       /* Hero */
@@ -472,6 +473,7 @@
     <button class="nav-action-btn"><i class="ti ti-heart"></i></button>
     <button class="nav-action-btn"><i class="ti ti-share"></i></button>
   </div>
+  <button class="nav-search-mobile" aria-label="Search"><i class="ti ti-search"></i></button>
   <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu"><i class="ti ti-menu-2"></i></button>
 </nav>
 
