@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Octa Living — Scene Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f9f9f7;--surface:#fff;--surface2:#f4f4f1;
+  --border:rgba(0,0,0,.1);--border-strong:rgba(0,0,0,.22);
+  --text:#1a1a18;--text-2:#5a5a55;--text-3:#9a9a93;
+  --gold:#c9a96e;--radius:10px;--radius-sm:6px;
+  --success-bg:#ebfbee;--success-border:#b2f2bb;--success-text:#2f9e44;
+  --error-bg:#fff5f5;--error-border:#ffc9c9;--error-text:#c92a2a;
+  --warn-bg:#fff9db;--warn-border:#ffe066;--warn-text:#e67700;
+  --info-bg:#eef2ff;--info-border:#bac8ff;--info-text:#3b5bdb;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 4rem;}
+.container{width:100%;max-width:700px;margin:0 auto;}
+
+/* Header */
+.header{display:flex;align-items:center;gap:12px;margin-bottom:2rem;}
+.logo-mark{width:38px;height:38px;border-radius:50%;background:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.header-text p:first-child{font-size:15px;font-weight:600;}
+.header-text p:last-child{font-size:12px;color:var(--text-3);margin-top:1px;}
+.db-pill{margin-left:auto;display:flex;align-items:center;gap:6px;background:var(--surface);border:.5px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--text-3);flex-shrink:0;}
+.db-dot{width:7px;height:7px;border-radius:50%;background:var(--border);transition:background .3s;}
+.db-dot.connected{background:#40c057;}
+
+/* Scenes list */
+.scenes-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.scenes-title{font-size:18px;font-weight:600;}
+.btn-new-scene{display:inline-flex;align-items:center;gap:6px;background:var(--text);color:#fff;border:none;border-radius:var(--radius);padding:9px 18px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:opacity .15s;}
+.btn-new-scene:hover{opacity:.85;}
+
+.scene-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px;transition:border-color .15s;}
+.scene-card:hover{border-color:var(--border-strong);}
+.scene-card-header{display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;}
+.scene-img-thumb{width:56px;height:56px;border-radius:8px;background:var(--surface2);border:.5px solid var(--border);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:22px;}
+.scene-img-thumb img{width:100%;height:100%;object-fit:cover;}
+.scene-card-info{flex:1;min-width:0;}
+.scene-card-name{font-size:14px;font-weight:600;color:var(--text);}
+.scene-card-meta{font-size:12px;color:var(--text-3);margin-top:2px;}
+.scene-card-count{font-size:11px;font-weight:600;background:var(--surface2);border:.5px solid var(--border);border-radius:20px;padding:2px 10px;color:var(--text-2);white-space:nowrap;}
+.scene-card-chevron{font-size:18px;color:var(--text-3);transition:transform .2s;flex-shrink:0;}
+.scene-card.open .scene-card-chevron{transform:rotate(180deg);}
+.scene-card-body{display:none;border-top:.5px solid var(--border);padding:14px 16px;}
+.scene-card.open .scene-card-body{display:block;}
+
+.product-row{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--surface2);border-radius:var(--radius-sm);margin-bottom:6px;}
+.product-row-img{width:40px;height:40px;border-radius:6px;background:var(--surface);border:.5px solid var(--border);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text-3);}
+.product-row-img img{width:100%;height:100%;object-fit:cover;}
+.product-row-info{flex:1;min-width:0;}
+.product-row-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.product-row-meta{font-size:11px;color:var(--text-3);}
+.product-row-actions{display:flex;gap:6px;flex-shrink:0;}
+.icon-btn{background:none;border:.5px solid var(--border);border-radius:6px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--text-2);transition:all .15s;}
+.icon-btn:hover{background:var(--surface);color:var(--text);}
+.icon-btn.danger:hover{border-color:var(--error-text);color:var(--error-text);}
+
+.empty-scenes{text-align:center;padding:3rem 1rem;color:var(--text-3);}
+.empty-scenes i{font-size:44px;display:block;margin-bottom:.75rem;opacity:.3;}
+.empty-scenes p{font-size:14px;line-height:1.6;}
+
+/* Form */
+.form-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;overflow-y:auto;}
+.form-overlay.open{display:block;}
+.form-sheet{background:var(--surface);border-radius:14px 14px 0 0;max-width:680px;margin:60px auto 0;padding:0 0 40px;min-height:calc(100vh - 60px);}
+.form-sheet-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:.5px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:10;border-radius:14px 14px 0 0;}
+.form-sheet-title{font-size:16px;font-weight:600;}
+.form-close{background:none;border:.5px solid var(--border);border-radius:8px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:var(--text-2);transition:all .15s;}
+.form-close:hover{background:var(--surface2);}
+.form-body{padding:20px;}
+
+/* Cards in form */
+.card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:10px;}
+.card-label{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+input[type="text"],input[type="url"],textarea,select{width:100%;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--surface2);border:.5px solid var(--border);border-radius:var(--radius-sm);outline:none;transition:border-color .15s;appearance:none;-webkit-appearance:none;}
+input:focus,textarea:focus,select:focus{border-color:var(--border-strong);background:#fff;}
+input::placeholder,textarea::placeholder{color:var(--text-3);}
+textarea{resize:vertical;min-height:70px;line-height:1.5;}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239a9a93' stroke-width='2' stroke-linecap='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
+.field-label{font-size:11px;color:var(--text-3);margin-bottom:4px;display:block;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.hint{font-size:11px;color:var(--text-3);margin-top:5px;line-height:1.5;}
+
+/* Image upload */
+.img-upload-wrap{display:flex;flex-direction:column;gap:8px;}
+.img-preview-large{width:100%;height:180px;border-radius:var(--radius-sm);border:.5px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
+.img-preview-large img{width:100%;height:100%;object-fit:cover;}
+.img-preview-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-3);font-size:12px;}
+.img-upload-row{display:flex;align-items:center;gap:8px;}
+.img-upload-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;background:var(--surface2);border:.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;color:var(--text-2);transition:all .15s;flex-shrink:0;}
+.img-upload-btn:hover{background:var(--text);color:#fff;border-color:var(--text);}
+.img-status{font-size:11px;color:var(--text-3);}
+.img-status.ok{color:var(--success-text);}
+.img-status.err{color:var(--error-text);}
+
+/* Products in form */
+.products-in-scene{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
+.product-form-row{background:var(--surface2);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;display:grid;gap:6px;}
+.product-form-row-header{display:flex;align-items:center;justify-content:space-between;}
+.product-form-row-num{font-size:11px;font-weight:600;color:var(--text-3);}
+
+.btn-add-product{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:10px;background:none;border:.5px dashed var(--border-strong);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text-2);cursor:pointer;transition:all .15s;}
+.btn-add-product:hover{background:var(--surface2);color:var(--text);border-style:solid;}
+
+/* Buttons */
+.btn-primary{width:100%;padding:12px;background:var(--text);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:opacity .15s;margin-top:12px;}
+.btn-primary:hover{opacity:.85;}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed;}
+
+/* Alert */
+.alert{display:none;border-radius:var(--radius-sm);padding:.75rem 1rem;font-size:13px;margin-bottom:10px;}
+.alert.error{display:block;background:var(--error-bg);border:.5px solid var(--error-border);color:var(--error-text);}
+.alert.saving{display:flex;align-items:center;gap:8px;background:var(--warn-bg);border:.5px solid var(--warn-border);color:var(--warn-text);}
+
+/* Dept colors */
+.dept-spaces{color:#3b5bdb;} .dept-eats{color:#e67700;} .dept-style{color:#9c36b5;}
+.dept-well{color:#2f9e44;} .dept-move{color:#e8590c;} .dept-work{color:#495057;} .dept-play{color:#c2255c;}
+
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.spin{display:inline-block;animation:spin 1s linear infinite;}
+
+@media(max-width:600px){
+  .form-sheet{margin:40px auto 0;border-radius:14px 14px 0 0;}
+  .grid-2{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="logo-mark">
+      <svg viewBox="0 0 30 30" fill="none" width="22" height="22">
+        <path d="M15 2 C9 2 4.5 6 3.5 11.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M3.5 11.5 C2.5 14 2.5 16 3.5 18.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M3.5 18.5 C4.5 24 9 28 15 28" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M15 28 C21 28 25.5 24 26.5 18.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M26.5 18.5 C27.5 16 27.5 14 26.5 11.5" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M26.5 11.5 C25.5 6 21 2 15 2" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="header-text">
+      <p>Scene builder</p>
+      <p>Octa Living · curated room concepts</p>
+    </div>
+    <div class="db-pill">
+      <div class="db-dot" id="db-dot"></div>
+      <span id="db-label">Connecting…</span>
+    </div>
+  </div>
+
+  <div class="scenes-header">
+    <h2 class="scenes-title">Your scenes</h2>
+    <button class="btn-new-scene" onclick="openForm()">
+      <i class="ti ti-plus"></i> New scene
+    </button>
+  </div>
+
+  <div id="scenes-list">
+    <div class="empty-scenes">
+      <i class="ti ti-layout-grid"></i>
+      <p>No scenes yet.<br>Create your first curated room concept.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- New scene form sheet -->
+<div class="form-overlay" id="form-overlay" onclick="handleOverlayClick(event)">
+  <div class="form-sheet" id="form-sheet">
+    <div class="form-sheet-header">
+      <span class="form-sheet-title" id="form-title">New scene</span>
+      <button class="form-close" onclick="closeForm()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-body">
+
+      <!-- Scene info -->
+      <div class="card">
+        <p class="card-label">Scene details</p>
+        <div style="margin-bottom:8px;">
+          <label class="field-label">Scene name *</label>
+          <input type="text" id="f-scene-name" placeholder="e.g. The Minimalist Condo Living Room"/>
+        </div>
+        <div class="grid-2" style="margin-bottom:8px;">
+          <div>
+            <label class="field-label">Department</label>
+            <select id="f-dept" onchange="onDeptChange()">
+              <option value="spaces">🏠 Spaces</option>
+              <option value="eats">☕ Eats</option>
+              <option value="style">👕 Style</option>
+              <option value="well">💚 Well</option>
+              <option value="move">✈️ Move</option>
+              <option value="work">💻 Work</option>
+              <option value="play">🎮 Play</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Subcategory</label>
+            <select id="f-subcat"></select>
+          </div>
+        </div>
+        <div>
+          <label class="field-label">Scene description (optional)</label>
+          <textarea id="f-desc" placeholder="e.g. A warm, minimal condo living room with neutral tones — cozy without the clutter."></textarea>
+        </div>
+      </div>
+
+      <!-- Scene image -->
+      <div class="card">
+        <p class="card-label">Scene image</p>
+        <div class="img-upload-wrap">
+          <div class="img-preview-large" id="scene-img-preview">
+            <div class="img-preview-placeholder">
+              <i class="ti ti-photo" style="font-size:32px;opacity:.3;"></i>
+              <span>Upload your AI-generated room design</span>
+            </div>
+          </div>
+          <div class="img-upload-row">
+            <label class="img-upload-btn">
+              <input type="file" id="scene-img-file" accept="image/*" style="display:none"/>
+              <i class="ti ti-upload"></i> Upload scene image
+            </label>
+            <span class="img-status" id="scene-img-status"></span>
+          </div>
+          <p class="hint">Generate a room design using AI (Midjourney, DALL-E, Canva AI), then upload it here. This becomes your marketing collateral.</p>
+        </div>
+        <input type="hidden" id="scene-img-url"/>
+      </div>
+
+      <!-- Products -->
+      <div class="card">
+        <p class="card-label">Products in this scene</p>
+        <div class="products-in-scene" id="products-in-scene"></div>
+        <button class="btn-add-product" onclick="addProductRow()">
+          <i class="ti ti-plus"></i> Add product
+        </button>
+        <p class="hint" style="margin-top:8px;">Add each Shopee product featured in your scene. Use the affiliate link from your link generator.</p>
+      </div>
+
+      <div class="alert" id="form-alert"></div>
+      <button class="btn-primary" id="btn-save-scene" onclick="saveScene()">
+        <i class="ti ti-sparkles"></i> Save scene
+      </button>
+
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyBCshoaZtrhuG1GNmD1MoArfW7wPvTIEto",
+  authDomain:"octa-living.firebaseapp.com",
+  projectId:"octa-living",
+  storageBucket:"octa-living.firebasestorage.app",
+  messagingSenderId:"728259117086",
+  appId:"1:728259117086:web:a0b48da63aa04c41a5ae0f"
+});
+const db = getFirestore(app);
+window._db = db;
+
+document.getElementById('db-dot').className = 'db-dot connected';
+document.getElementById('db-label').textContent = 'Firebase ready';
+
+const CLOUDINARY_CLOUD = 'dtywj4n8m';
+const CLOUDINARY_PRESET = 'octaliving';
+const AFFILIATE_ID = '13399250022';
+
+const DEPTS = {
+  spaces:{name:'Spaces',icon:'ti-home',subs:['Living room','Bedroom','Kitchen & dining','Bathroom','Lighting','Plants & outdoors','Decor & accents']},
+  eats:{name:'Eats',icon:'ti-coffee',subs:['Coffee & tea','Drinkware','Kitchen tools','Cookware','Pantry & snacks','Small appliances']},
+  style:{name:'Style',icon:'ti-shirt',subs:["Men's","Women's",'Teens','Children','Babies','Maternity','Plus size','Activewear','Accessories','Footwear']},
+  well:{name:'Well',icon:'ti-heart-rate-monitor',subs:['Fitness','Skincare','Body care','Hair care','Sleep & recovery','Supplements','Mental wellness']},
+  move:{name:'Move',icon:'ti-plane',subs:['Luggage','Travel bags','Travel accessories','Gadgets on the go','Comfort & health']},
+  work:{name:'Work',icon:'ti-device-laptop',subs:['Desk setup','Input devices','Audio','Stationery','Tech accessories','Ergonomics']},
+  play:{name:'Play',icon:'ti-confetti',subs:['Gaming','Books & reading','Art & craft','Music','Outdoor & recreation','Puzzles & board games','Collectibles & gifts']},
+};
+
+let scenes = [];
+let productRowCount = 0;
+let editingSceneId = null;
+
+// Live sync scenes
+onSnapshot(collection(db, 'scenes'), snap => {
+  scenes = [];
+  snap.forEach(d => scenes.push({id: d.id, ...d.data()}));
+  scenes.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+  renderScenes();
+}, err => { console.error(err); });
+
+function esc(s) { return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : ''; }
+
+function renderScenes() {
+  const list = document.getElementById('scenes-list');
+  if (!scenes.length) {
+    list.innerHTML = `<div class="empty-scenes"><i class="ti ti-layout-grid"></i><p>No scenes yet.<br>Create your first curated room concept.</p></div>`;
+    return;
+  }
+  list.innerHTML = scenes.map(s => {
+    const dept = DEPTS[s.dept];
+    const products = s.products || [];
+    return `<div class="scene-card" id="scene-card-${esc(s.id)}">
+      <div class="scene-card-header" onclick="toggleSceneCard('${esc(s.id)}')">
+        <div class="scene-img-thumb">
+          ${s.image ? `<img src="${esc(s.image)}" alt="${esc(s.name)}"/>` : `<i class="ti ${dept?.icon||'ti-photo'}"></i>`}
+        </div>
+        <div class="scene-card-info">
+          <div class="scene-card-name">${esc(s.name)}</div>
+          <div class="scene-card-meta">${dept?.name||s.dept}${s.subcat?' · '+esc(s.subcat):''}</div>
+        </div>
+        <span class="scene-card-count">${products.length} product${products.length!==1?'s':''}</span>
+        <i class="ti ti-chevron-down scene-card-chevron"></i>
+      </div>
+      <div class="scene-card-body">
+        ${s.description ? `<p style="font-size:13px;color:var(--text-2);margin-bottom:12px;line-height:1.6;">${esc(s.description)}</p>` : ''}
+        ${s.image ? `<img src="${esc(s.image)}" alt="${esc(s.name)}" style="width:100%;border-radius:8px;margin-bottom:12px;object-fit:cover;max-height:220px;"/>` : ''}
+        <div>${products.map(p => `
+          <div class="product-row">
+            <div class="product-row-img">
+              ${p.image ? `<img src="${esc(p.image)}" alt="${esc(p.name)}"/>` : `<i class="ti ${dept?.icon||'ti-package'}"></i>`}
+            </div>
+            <div class="product-row-info">
+              <div class="product-row-name">${esc(p.name)}</div>
+              <div class="product-row-meta">${p.price?'₱'+esc(p.price)+' · ':''}${esc(p.source||'Shopee')}</div>
+            </div>
+            <div class="product-row-actions">
+              ${p.link?`<a href="${esc(p.link)}" class="icon-btn" target="_blank" rel="noopener" title="Open on Shopee"><i class="ti ti-external-link"></i></a>`:''}
+            </div>
+          </div>`).join('')}
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <button class="icon-btn" onclick="editScene('${esc(s.id)}')" title="Edit scene" style="width:auto;padding:6px 14px;gap:6px;font-size:12px;"><i class="ti ti-edit"></i> Edit</button>
+          <button class="icon-btn danger" onclick="deleteScene('${esc(s.id)}')" title="Delete scene" style="width:auto;padding:6px 14px;gap:6px;font-size:12px;"><i class="ti ti-trash"></i> Delete</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.toggleSceneCard = function(id) {
+  const card = document.getElementById('scene-card-'+id);
+  card.classList.toggle('open');
+};
+
+window.deleteScene = async function(id) {
+  if (!confirm('Delete this scene? This cannot be undone.')) return;
+  await deleteDoc(doc(db, 'scenes', id));
+};
+
+window.editScene = function(id) {
+  const scene = scenes.find(s => s.id === id);
+  if (!scene) return;
+  editingSceneId = id;
+  openForm(scene);
+};
+
+// Dept subcategory dropdown
+window.onDeptChange = function() {
+  const deptId = document.getElementById('f-dept').value;
+  const dept = DEPTS[deptId];
+  const subSel = document.getElementById('f-subcat');
+  subSel.innerHTML = dept.subs.map(s => `<option value="${s}">${s}</option>`).join('');
+};
+window.onDeptChange();
+
+// Scene image upload
+document.getElementById('scene-img-file').addEventListener('change', async function() {
+  const file = this.files[0];
+  if (!file) return;
+  if (file.size > 10*1024*1024) { setImgStatus('err','Image must be under 10MB.'); return; }
+  setImgStatus('loading','Uploading…');
+  try {
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', CLOUDINARY_PRESET);
+    fd.append('folder', 'octaliving/scenes');
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,{method:'POST',body:fd});
+    const data = await res.json();
+    if (data.secure_url) {
+      document.getElementById('scene-img-url').value = data.secure_url;
+      const preview = document.getElementById('scene-img-preview');
+      preview.innerHTML = `<img src="${data.secure_url}" alt="Scene"/>`;
+      setImgStatus('ok','✓ Uploaded');
+    } else { setImgStatus('err','Upload failed.'); }
+  } catch(e) { setImgStatus('err','Error: '+e.message); }
+  this.value = '';
+});
+
+function setImgStatus(type, msg) {
+  const el = document.getElementById('scene-img-status');
+  el.className = 'img-status '+type;
+  el.textContent = msg;
+  if (type==='ok') setTimeout(()=>{el.textContent='';el.className='img-status';},3000);
+}
+
+// Product rows
+window.addProductRow = function(data={}) {
+  productRowCount++;
+  const n = productRowCount;
+  const container = document.getElementById('products-in-scene');
+  const div = document.createElement('div');
+  div.className = 'product-form-row';
+  div.id = 'product-row-'+n;
+  div.innerHTML = `
+    <div class="product-form-row-header">
+      <span class="product-form-row-num">Product ${n}</span>
+      <button class="icon-btn danger" onclick="removeProductRow(${n})" title="Remove"><i class="ti ti-x"></i></button>
+    </div>
+    <div>
+      <label class="field-label">Product name *</label>
+      <input type="text" id="pr-name-${n}" placeholder="e.g. Rattan Storage Basket" value="${esc(data.name||'')}"/>
+    </div>
+    <div class="grid-2">
+      <div>
+        <label class="field-label">Price (₱)</label>
+        <input type="text" id="pr-price-${n}" placeholder="e.g. 599" value="${esc(data.price||'')}"/>
+      </div>
+      <div>
+        <label class="field-label">Source</label>
+        <select id="pr-source-${n}">
+          <option${data.source==='Shopee'||!data.source?' selected':''}>Shopee</option>
+          <option${data.source==='Lazada'?' selected':''}>Lazada</option>
+          <option${data.source==='TikTok Shop'?' selected':''}>TikTok Shop</option>
+          <option${data.source==='Other'?' selected':''}>Other</option>
+        </select>
+      </div>
+    </div>
+    <div>
+      <label class="field-label">Affiliate link (from link generator)</label>
+      <input type="url" id="pr-link-${n}" placeholder="https://s.shopee.ph/an_redir?..." value="${esc(data.link||'')}"/>
+    </div>
+    <div>
+      <label class="field-label">Image URL or upload</label>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="url" id="pr-image-${n}" placeholder="https://... or upload →" value="${esc(data.image||'')}" style="flex:1;"/>
+        <label class="img-upload-btn" style="flex-shrink:0;white-space:nowrap;">
+          <input type="file" accept="image/*" style="display:none;" data-row="${n}" class="product-img-upload"/>
+          <i class="ti ti-upload"></i>
+        </label>
+        <span class="img-status" id="pr-img-status-${n}"></span>
+      </div>
+    </div>`;
+  container.appendChild(div);
+
+  // Bind product image upload for this row
+  div.querySelector('.product-img-upload').addEventListener('change', async function() {
+    const rowN = this.dataset.row;
+    const file = this.files[0];
+    if (!file) return;
+    const statusEl = document.getElementById('pr-img-status-'+rowN);
+    statusEl.className='img-status loading'; statusEl.textContent='Uploading…';
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('upload_preset', CLOUDINARY_PRESET);
+      fd.append('folder', 'octaliving/products');
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,{method:'POST',body:fd});
+      const data = await res.json();
+      if (data.secure_url) {
+        document.getElementById('pr-image-'+rowN).value = data.secure_url;
+        statusEl.className='img-status ok'; statusEl.textContent='✓';
+        setTimeout(()=>{statusEl.textContent='';statusEl.className='img-status';},2000);
+      } else { statusEl.className='img-status err'; statusEl.textContent='Failed'; }
+    } catch(e) { statusEl.className='img-status err'; statusEl.textContent='Error'; }
+    this.value='';
+  });
+};
+
+window.removeProductRow = function(n) {
+  const el = document.getElementById('product-row-'+n);
+  if (el) el.remove();
+};
+
+// Collect product rows
+function collectProducts() {
+  const rows = document.querySelectorAll('#products-in-scene .product-form-row');
+  const products = [];
+  rows.forEach(row => {
+    const n = row.id.replace('product-row-','');
+    const name = document.getElementById('pr-name-'+n)?.value.trim();
+    if (!name) return;
+    products.push({
+      id: Date.now().toString()+'-'+n,
+      name,
+      price: document.getElementById('pr-price-'+n)?.value.trim()||'',
+      source: document.getElementById('pr-source-'+n)?.value||'Shopee',
+      link: document.getElementById('pr-link-'+n)?.value.trim()||'',
+      image: document.getElementById('pr-image-'+n)?.value.trim()||'',
+    });
+  });
+  return products;
+}
+
+// Open / close form
+window.openForm = function(scene=null) {
+  editingSceneId = scene?.id || null;
+  document.getElementById('form-title').textContent = scene ? 'Edit scene' : 'New scene';
+  document.getElementById('f-scene-name').value = scene?.name || '';
+  document.getElementById('f-dept').value = scene?.dept || 'spaces';
+  window.onDeptChange();
+  if (scene?.subcat) document.getElementById('f-subcat').value = scene.subcat;
+  document.getElementById('f-desc').value = scene?.description || '';
+  document.getElementById('scene-img-url').value = scene?.image || '';
+  const preview = document.getElementById('scene-img-preview');
+  preview.innerHTML = scene?.image
+    ? `<img src="${esc(scene.image)}" alt="Scene"/>`
+    : `<div class="img-preview-placeholder"><i class="ti ti-photo" style="font-size:32px;opacity:.3;"></i><span>Upload your AI-generated room design</span></div>`;
+  // Clear and re-add product rows
+  document.getElementById('products-in-scene').innerHTML = '';
+  productRowCount = 0;
+  if (scene?.products?.length) {
+    scene.products.forEach(p => window.addProductRow(p));
+  }
+  document.getElementById('form-alert').className = 'alert';
+  document.getElementById('form-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeForm = function() {
+  document.getElementById('form-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+};
+
+window.handleOverlayClick = function(e) {
+  if (e.target === document.getElementById('form-overlay')) window.closeForm();
+};
+
+// Save scene
+window.saveScene = async function() {
+  const name = document.getElementById('f-scene-name').value.trim();
+  const dept = document.getElementById('f-dept').value;
+  const subcat = document.getElementById('f-subcat').value;
+  const description = document.getElementById('f-desc').value.trim();
+  const image = document.getElementById('scene-img-url').value.trim();
+  const products = collectProducts();
+  const alertEl = document.getElementById('form-alert');
+
+  if (!name) { alertEl.className='alert error'; alertEl.textContent='Please enter a scene name.'; return; }
+
+  const btn = document.getElementById('btn-save-scene');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ti ti-loader spin"></i> Saving…';
+  alertEl.className = 'alert saving'; alertEl.textContent = 'Saving scene to Firebase…';
+
+  try {
+    const sceneId = editingSceneId || ('scene-'+Date.now());
+    await setDoc(doc(db, 'scenes', sceneId), {
+      id: sceneId, name, dept, subcat, description, image,
+      products, createdAt: editingSceneId ? undefined : Date.now(),
+      updatedAt: Date.now()
+    }, {merge: true});
+
+    // Also save products to the products collection for the explorer/webstore
+    for (const p of products) {
+      if (!p.link) continue;
+      const pKey = `${dept}::${subcat}::Scene products`;
+      const docId = pKey.replace(/[^a-zA-Z0-9_\-]/g,'_')+'__'+p.id;
+      await setDoc(doc(db,'products',docId),{
+        pKey, ...p, sceneId, sceneName: name, hero: false, updatedAt: Date.now()
+      });
+    }
+
+    alertEl.className = 'alert'; alertEl.textContent = '';
+    window.closeForm();
+  } catch(e) {
+    alertEl.className = 'alert error'; alertEl.textContent = 'Save failed: '+e.message;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="ti ti-sparkles"></i> Save scene';
+  }
+};
+</script>
+</body>
+</html>
